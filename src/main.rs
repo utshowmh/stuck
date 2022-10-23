@@ -1,11 +1,13 @@
-use std::{env::args, process::exit};
-
-use interpreter::Interpreter;
-
+mod compiler;
 mod global;
 mod interpreter;
 mod lexer;
 mod operation;
+
+use std::{env::args, process::exit};
+
+use compiler::Compiler;
+use interpreter::Interpreter;
 
 fn main() {
     let args: Vec<String> = args().collect();
@@ -31,7 +33,8 @@ fn main() {
                     interpreter.run(source_path);
                 }
                 "c" => {
-                    help(Some("Not Implemented"));
+                    let mut compiler = Compiler::new();
+                    compiler.run(source_path);
                 }
                 unknown => {
                     help(Some(&format!("Unknown flag `{}`", unknown)));

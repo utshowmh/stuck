@@ -34,8 +34,10 @@ impl Interpreter {
 impl Interpreter {
     fn interpret(&mut self) {
         let mut instruction_pointer = 0;
+
         while instruction_pointer < self.program.len() {
             let operation = &self.program[instruction_pointer];
+
             match operation.op_type {
                 OperationType::Push => {
                     instruction_pointer += 1;
