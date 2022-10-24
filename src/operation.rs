@@ -5,6 +5,9 @@ pub enum OperationType {
     Push,
     Plus,
     Minus,
+    If,
+    Then,
+    End,
     Dump,
 }
 

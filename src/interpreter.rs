@@ -77,12 +77,43 @@ impl Interpreter {
                     self.stack.push(b - a);
                 }
 
-                OperationType::Dump => {
+                OperationType::If => {
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Then => {
                     instruction_pointer += 1;
 
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
                             "`.` operation requires one operand; in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    if let Some(end_block) = operation.operand {
+                        if a == 0 {
+                            instruction_pointer = end_block as usize;
+                        }
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`then` does not have reference to the end block in line {}",
+                            operation.line
+                        ));
+                    }
+                }
+
+                OperationType::End => {
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Dump => {
+                    instruction_pointer += 1;
+
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`.` operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -96,6 +127,10 @@ impl Interpreter {
 
     fn stack_underflow(&self, message: &str) {
         self.error("StackUnderflow", message);
+    }
+
+    fn invalid_reference(&self, message: &str) {
+        self.error("Invalid Reference", message);
     }
 
     fn error(&self, e_type: &str, message: &str) {

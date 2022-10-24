@@ -114,6 +114,12 @@ impl Compiler {
                     write!(output, "    push rbx \n").unwrap();
                 }
 
+                OperationType::If => {}
+
+                OperationType::Then => {}
+
+                OperationType::End => {}
+
                 OperationType::Dump => {
                     instruction_pointer += 1;
 
