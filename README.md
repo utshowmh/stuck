@@ -8,7 +8,7 @@ Stuck is a low level compiled + interpreted [stack based programing language](ht
 </br>
 
 **Inspiration:**
-This project is highly inspired by Alexey Kutepov's [Porth](https://gitlab.com/tsoding/porth)
+This project is heavily inspired by Alexey Kutepov's [Porth](https://gitlab.com/tsoding/porth)
 
 </br>
 
