@@ -1,0 +1,4 @@
+# Special operators
+
+10
+dup .         # duplicates top most stack item

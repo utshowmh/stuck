@@ -47,6 +47,21 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Dup => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`dup` operation requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    self.stack.push(a);
+                    self.stack.push(a);
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::Plus => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
@@ -77,6 +92,36 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Equal => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`=` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    self.stack.push((a == b) as Integer);
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Greater => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`>` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    self.stack.push((b > a) as Integer);
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::If => {
                     instruction_pointer += 1;
                 }
@@ -102,6 +147,14 @@ impl Interpreter {
                             operation.line
                         ));
                     }
+                }
+
+                OperationType::While => {
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Do => {
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Else => {

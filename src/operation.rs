@@ -3,12 +3,21 @@ use crate::global::Integer;
 #[derive(Debug)]
 pub enum OperationType {
     Push,
+    Dup,
+
     Plus,
     Minus,
+
+    Equal,
+    Greater,
+
     If,
     Then,
     Else,
+    While,
+    Do,
     End,
+
     Dump,
 }
 

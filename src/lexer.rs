@@ -51,6 +51,28 @@ impl Lexer {
                         ));
                     }
 
+                    "=" => {
+                        program.push(Operation::new(OperationType::Equal, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Equal,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
+                    ">" => {
+                        program.push(Operation::new(
+                            OperationType::Greater,
+                            None,
+                            self.line_number,
+                        ));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Greater,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
                     "if" => {
                         program.push(Operation::new(OperationType::If, None, self.line_number));
                         crossrefernced_program.push(Operation::new(
@@ -78,10 +100,37 @@ impl Lexer {
                         ));
                     }
 
+                    "while" => {
+                        program.push(Operation::new(OperationType::While, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::While,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
+                    "do" => {
+                        program.push(Operation::new(OperationType::Do, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Do,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
                     "end" => {
                         program.push(Operation::new(OperationType::End, None, self.line_number));
                         crossrefernced_program.push(Operation::new(
                             OperationType::End,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
+                    "dup" => {
+                        program.push(Operation::new(OperationType::Dup, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Dup,
                             None,
                             self.line_number,
                         ));

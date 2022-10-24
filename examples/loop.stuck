@@ -1,0 +1,6 @@
+# loops
+
+10
+while dup do
+    dup .
+end

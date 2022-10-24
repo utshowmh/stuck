@@ -94,6 +94,15 @@ impl Compiler {
                     }
                 }
 
+                OperationType::Dup => {
+                    instruction_pointer += 1;
+
+                    write!(output, "    ; -- dup -- \n").unwrap();
+                    write!(output, "    pop rax \n").unwrap();
+                    write!(output, "    push rax \n").unwrap();
+                    write!(output, "    push rax \n").unwrap();
+                }
+
                 OperationType::Plus => {
                     instruction_pointer += 1;
 
@@ -112,6 +121,32 @@ impl Compiler {
                     write!(output, "    pop rbx \n").unwrap();
                     write!(output, "    sub rbx, rax \n").unwrap();
                     write!(output, "    push rbx \n").unwrap();
+                }
+
+                OperationType::Equal => {
+                    instruction_pointer += 1;
+
+                    write!(output, "    ; -- equal -- \n").unwrap();
+                    write!(output, "    mov rcx, 0 \n").unwrap();
+                    write!(output, "    mov rdx, 1 \n").unwrap();
+                    write!(output, "    pop rax \n").unwrap();
+                    write!(output, "    pop rbx \n").unwrap();
+                    write!(output, "    cmp rax, rbx \n").unwrap();
+                    write!(output, "    cmove rcx, rdx \n").unwrap();
+                    write!(output, "    push rcx \n").unwrap();
+                }
+
+                OperationType::Greater => {
+                    instruction_pointer += 1;
+
+                    write!(output, "    ; -- greater -- \n").unwrap();
+                    write!(output, "    mov rcx, 0 \n").unwrap();
+                    write!(output, "    mov rdx, 1 \n").unwrap();
+                    write!(output, "    pop rbx \n").unwrap();
+                    write!(output, "    pop rax \n").unwrap();
+                    write!(output, "    cmp rax, rbx \n").unwrap();
+                    write!(output, "    cmovg rcx, rdx \n").unwrap();
+                    write!(output, "    push rcx \n").unwrap();
                 }
 
                 OperationType::If => {
@@ -147,6 +182,14 @@ impl Compiler {
                             operation.line
                         ));
                     }
+                }
+
+                OperationType::While => {
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Do => {
+                    instruction_pointer += 1;
                 }
 
                 OperationType::End => {
