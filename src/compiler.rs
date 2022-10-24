@@ -28,15 +28,14 @@ impl Compiler {
         let mut lexer = Lexer::new(source);
         self.program.append(&mut lexer.lex());
 
-        let output_path = source_path.split(".").collect::<Vec<&str>>()[0];
-        self.compile(output_path);
+        self.compile();
     }
 }
 
 impl Compiler {
-    fn compile(&mut self, output_path: &str) {
+    fn compile(&mut self) {
         let mut instruction_pointer = 0;
-        let mut output = File::create(format!("{}.asm", output_path)).unwrap_or_else(|err| {
+        let mut output = File::create("output.asm").unwrap_or_else(|err| {
             eprintln!("ERROR: {:#?}", err);
             exit(1);
         });
@@ -77,7 +76,6 @@ impl Compiler {
         write!(output, "    syscall\n").unwrap();
         write!(output, "    add     rsp, 40\n").unwrap();
         write!(output, "    ret\n").unwrap();
-        write!(output, "\n").unwrap();
         // END DUMP
         write!(output, "global _start\n").unwrap();
         write!(output, "\n").unwrap();
@@ -114,27 +112,6 @@ impl Compiler {
                     write!(output, "    pop rbx \n").unwrap();
                     write!(output, "    sub rbx, rax \n").unwrap();
                     write!(output, "    push rbx \n").unwrap();
-                }
-
-                OperationType::Multiplication => {
-                    instruction_pointer += 1;
-
-                    write!(output, "    ; -- mult -- \n").unwrap();
-                    write!(output, "    pop rax \n").unwrap();
-                    write!(output, "    pop rbx \n").unwrap();
-                    write!(output, "    imul rax, rbx \n").unwrap();
-                    write!(output, "    push rax \n").unwrap();
-                }
-
-                OperationType::Division => {
-                    panic!("`div` is not implemented on compile mode");
-                    // instruction_pointer += 1;
-
-                    // write!(output, "    ; -- div -- \n").unwrap();
-                    // write!(output, "    pop rax \n").unwrap();
-                    // write!(output, "    pop rbx \n").unwrap();
-                    // write!(output, "    div rbx, rax \n").unwrap();
-                    // write!(output, "    push rbx \n").unwrap();
                 }
 
                 OperationType::Dump => {

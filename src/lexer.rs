@@ -32,22 +32,6 @@ impl Lexer {
                         program.push(Operation::new(OperationType::Minus, None, self.line_number));
                     }
 
-                    "*" => {
-                        program.push(Operation::new(
-                            OperationType::Multiplication,
-                            None,
-                            self.line_number,
-                        ));
-                    }
-
-                    "/" => {
-                        program.push(Operation::new(
-                            OperationType::Division,
-                            None,
-                            self.line_number,
-                        ));
-                    }
-
                     "." => {
                         program.push(Operation::new(OperationType::Dump, None, self.line_number));
                     }

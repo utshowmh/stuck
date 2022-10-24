@@ -1,5 +1,4 @@
 /target
 
 # stuck specific
-*.asm
-*.o
+*output*

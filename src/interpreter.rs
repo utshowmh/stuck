@@ -77,36 +77,6 @@ impl Interpreter {
                     self.stack.push(b - a);
                 }
 
-                OperationType::Multiplication => {
-                    instruction_pointer += 1;
-
-                    if self.stack.len() < 2 {
-                        self.stack_underflow(&format!(
-                            "`*` operation requires two operand; in line {}",
-                            operation.line
-                        ));
-                    }
-
-                    let a = self.stack.pop().unwrap();
-                    let b = self.stack.pop().unwrap();
-                    self.stack.push(a * b);
-                }
-
-                OperationType::Division => {
-                    instruction_pointer += 1;
-
-                    if self.stack.len() < 2 {
-                        self.stack_underflow(&format!(
-                            "`/` operation requires two operand; in line {}",
-                            operation.line
-                        ));
-                    }
-
-                    let a = self.stack.pop().unwrap();
-                    let b = self.stack.pop().unwrap();
-                    self.stack.push(b / a);
-                }
-
                 OperationType::Dump => {
                     instruction_pointer += 1;
 
