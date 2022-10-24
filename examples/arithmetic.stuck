@@ -1,2 +1,5 @@
-210 210 + .
-1000 580 - .
+# Available arithmetic operations.
+420 # pushes 420
+. # pops and print
+210 210 + . # it's like 210 + 210.
+1000 580 - . # it's like 1000 - 580.

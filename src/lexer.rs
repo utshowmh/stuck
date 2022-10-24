@@ -19,10 +19,15 @@ impl Lexer {
         let mut program = Vec::new();
         let source = self.source.trim().split("\n");
 
-        for line in source {
+        'line: for line in source {
             for token in line.trim().split(" ") {
                 match token {
-                    " " | "\t" | "\r" | "\n" => continue,
+                    " " | "\t" | "\r" | "\n" | "" => continue,
+
+                    "#" => {
+                        self.line_number += 1;
+                        continue 'line;
+                    }
 
                     "+" => {
                         program.push(Operation::new(OperationType::Plus, None, self.line_number));
