@@ -131,7 +131,7 @@ impl Lexer {
 
                         match &opening_block.op_type {
                             OperationType::Then => {
-                                opening_block.operand = Some(operation_index as Integer);
+                                opening_block.operand = Some((operation_index + 1) as Integer);
                             }
 
                             opening_block => {

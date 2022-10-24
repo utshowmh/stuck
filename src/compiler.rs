@@ -114,11 +114,32 @@ impl Compiler {
                     write!(output, "    push rbx \n").unwrap();
                 }
 
-                OperationType::If => {}
+                OperationType::If => {
+                    instruction_pointer += 1;
+                }
 
-                OperationType::Then => {}
+                OperationType::Then => {
+                    instruction_pointer += 1;
 
-                OperationType::End => {}
+                    if let Some(end_block) = operation.operand {
+                        write!(output, "    ; -- if-then -- \n").unwrap();
+                        write!(output, "    pop rax \n").unwrap();
+                        write!(output, "    test rax, rax \n").unwrap();
+                        write!(output, "    jz addr_{} \n", end_block).unwrap();
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`then` does not have reference to the end block in line {}",
+                            operation.line
+                        ));
+                    }
+                }
+
+                OperationType::End => {
+                    instruction_pointer += 1;
+
+                    write!(output, "    ; -- end -- \n").unwrap();
+                    write!(output, "     addr_{}: \n", instruction_pointer).unwrap();
+                }
 
                 OperationType::Dump => {
                     instruction_pointer += 1;
@@ -133,5 +154,14 @@ impl Compiler {
         write!(output, "    mov rax, 60 \n").unwrap();
         write!(output, "    mov rdi, 0 \n").unwrap();
         write!(output, "    syscall \n").unwrap();
+    }
+
+    fn invalid_reference(&self, message: &str) {
+        self.error("Invalid Reference", message);
+    }
+
+    fn error(&self, e_type: &str, message: &str) {
+        eprintln!("{}: {}", e_type, message);
+        exit(1);
     }
 }
