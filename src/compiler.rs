@@ -128,7 +128,22 @@ impl Compiler {
                         write!(output, "    jz addr_{} \n", end_block).unwrap();
                     } else {
                         self.invalid_reference(&format!(
-                            "`then` does not have reference to the end block in line {}",
+                            "`then` does not have reference to the `end` block in line {}",
+                            operation.line
+                        ));
+                    }
+                }
+
+                OperationType::Else => {
+                    instruction_pointer += 1;
+
+                    if let Some(end_block) = operation.operand {
+                        write!(output, "    ; -- else -- \n").unwrap();
+                        write!(output, "    jmp addr_{} \n", end_block).unwrap();
+                        write!(output, "addr_{}: \n", instruction_pointer).unwrap();
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`else` does not have reference to it's `end` block in line {}",
                             operation.line
                         ));
                     }
@@ -138,7 +153,7 @@ impl Compiler {
                     instruction_pointer += 1;
 
                     write!(output, "    ; -- end -- \n").unwrap();
-                    write!(output, "     addr_{}: \n", instruction_pointer).unwrap();
+                    write!(output, "addr_{}: \n", instruction_pointer).unwrap();
                 }
 
                 OperationType::Dump => {

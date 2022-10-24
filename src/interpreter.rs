@@ -40,19 +40,17 @@ impl Interpreter {
 
             match operation.op_type {
                 OperationType::Push => {
-                    instruction_pointer += 1;
-
                     if let Some(operand) = operation.operand {
                         self.stack.push(operand);
                     }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Plus => {
-                    instruction_pointer += 1;
-
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`+` operation requires two operand; in line {}",
+                            "`+` operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -60,14 +58,14 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
                     self.stack.push(a + b);
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Minus => {
-                    instruction_pointer += 1;
-
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`-` operation requires two operand; in line {}",
+                            "`-` operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -75,6 +73,8 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
                     self.stack.push(b - a);
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::If => {
@@ -82,11 +82,9 @@ impl Interpreter {
                 }
 
                 OperationType::Then => {
-                    instruction_pointer += 1;
-
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`.` operation requires one operand; in line {}",
+                            "`then` operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -95,13 +93,28 @@ impl Interpreter {
                     if let Some(end_block) = operation.operand {
                         if a == 0 {
                             instruction_pointer = end_block as usize;
+                        } else {
+                            instruction_pointer += 1;
                         }
                     } else {
                         self.invalid_reference(&format!(
-                            "`then` does not have reference to the end block in line {}",
+                            "`then` does not have reference to it's `end` or `else` block in line {}",
                             operation.line
                         ));
                     }
+                }
+
+                OperationType::Else => {
+                    if let Some(end_block) = operation.operand {
+                        instruction_pointer = end_block as usize;
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`else` does not have reference to it's `end` block in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::End => {
@@ -109,8 +122,6 @@ impl Interpreter {
                 }
 
                 OperationType::Dump => {
-                    instruction_pointer += 1;
-
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
                             "`.` operation requires one operand in line {}",
@@ -120,6 +131,8 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     println!("{}", a);
+
+                    instruction_pointer += 1;
                 }
             }
         }

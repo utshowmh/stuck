@@ -69,6 +69,15 @@ impl Lexer {
                         ));
                     }
 
+                    "else" => {
+                        program.push(Operation::new(OperationType::Else, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Else,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
                     "end" => {
                         program.push(Operation::new(OperationType::End, None, self.line_number));
                         crossrefernced_program.push(Operation::new(
@@ -125,6 +134,28 @@ impl Lexer {
             match operation.op_type {
                 OperationType::Then => block_references.push(operation_index),
 
+                OperationType::Else => {
+                    if let Some(if_block) = block_references.pop() {
+                        block_references.push(operation_index);
+                        let if_block = &mut crossreferenced_program[if_block];
+
+                        match &if_block.op_type {
+                            OperationType::Then => {
+                                if_block.operand = Some((operation_index + 1) as Integer);
+                            }
+
+                            opening_block => {
+                                self.error(&format!(
+                                    "Can't close `end` with `{:#?}`",
+                                    opening_block
+                                ));
+                            }
+                        }
+                    } else {
+                        self.error("Unexpected `else`");
+                    }
+                }
+
                 OperationType::End => {
                     if let Some(opening_block) = block_references.pop() {
                         let opening_block = &mut crossreferenced_program[opening_block];
@@ -134,12 +165,19 @@ impl Lexer {
                                 opening_block.operand = Some((operation_index + 1) as Integer);
                             }
 
+                            OperationType::Else => {
+                                opening_block.operand = Some((operation_index + 1) as Integer);
+                            }
+
                             opening_block => {
-                                self.error(&format!("Can't close `end` with {:#?}", opening_block));
+                                self.error(&format!(
+                                    "Can't close `end` with `{:#?}`",
+                                    opening_block
+                                ));
                             }
                         }
                     } else {
-                        self.error("Unexted `end`");
+                        self.error("Unexpected `end`");
                     }
                 }
 

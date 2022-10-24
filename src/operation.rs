@@ -7,6 +7,7 @@ pub enum OperationType {
     Minus,
     If,
     Then,
+    Else,
     End,
     Dump,
 }

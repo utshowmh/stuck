@@ -1,8 +1,7 @@
 # Conditional control flow
 
 if 1 then
-    if 1 then
-        420 .
-    end
-    1 .
+    420 .
+else
+    69 .
 end
