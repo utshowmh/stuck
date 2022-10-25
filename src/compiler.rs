@@ -86,46 +86,44 @@ impl Compiler {
 
             match operation.op_type {
                 OperationType::Push => {
-                    instruction_pointer += 1;
-
                     if let Some(operand) = operation.operand {
                         write!(output, "    ; -- push -- \n").unwrap();
                         write!(output, "    push {} \n", operand).unwrap();
                     }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Dup => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- dup -- \n").unwrap();
                     write!(output, "    pop rax \n").unwrap();
                     write!(output, "    push rax \n").unwrap();
                     write!(output, "    push rax \n").unwrap();
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Plus => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- plus -- \n").unwrap();
                     write!(output, "    pop rax \n").unwrap();
                     write!(output, "    pop rbx \n").unwrap();
                     write!(output, "    add rax, rbx \n").unwrap();
                     write!(output, "    push rax \n").unwrap();
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Minus => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- minus -- \n").unwrap();
                     write!(output, "    pop rax \n").unwrap();
                     write!(output, "    pop rbx \n").unwrap();
                     write!(output, "    sub rbx, rax \n").unwrap();
                     write!(output, "    push rbx \n").unwrap();
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Equal => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- equal -- \n").unwrap();
                     write!(output, "    mov rcx, 0 \n").unwrap();
                     write!(output, "    mov rdx, 1 \n").unwrap();
@@ -134,11 +132,11 @@ impl Compiler {
                     write!(output, "    cmp rax, rbx \n").unwrap();
                     write!(output, "    cmove rcx, rdx \n").unwrap();
                     write!(output, "    push rcx \n").unwrap();
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Greater => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- greater -- \n").unwrap();
                     write!(output, "    mov rcx, 0 \n").unwrap();
                     write!(output, "    mov rdx, 1 \n").unwrap();
@@ -147,6 +145,8 @@ impl Compiler {
                     write!(output, "    cmp rax, rbx \n").unwrap();
                     write!(output, "    cmovg rcx, rdx \n").unwrap();
                     write!(output, "    push rcx \n").unwrap();
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::If => {
@@ -154,10 +154,8 @@ impl Compiler {
                 }
 
                 OperationType::Then => {
-                    instruction_pointer += 1;
-
                     if let Some(end_block) = operation.operand {
-                        write!(output, "    ; -- if-then -- \n").unwrap();
+                        write!(output, "    ; -- then -- \n").unwrap();
                         write!(output, "    pop rax \n").unwrap();
                         write!(output, "    test rax, rax \n").unwrap();
                         write!(output, "    jz addr_{} \n", end_block).unwrap();
@@ -167,44 +165,64 @@ impl Compiler {
                             operation.line
                         ));
                     }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Else => {
-                    instruction_pointer += 1;
-
                     if let Some(end_block) = operation.operand {
                         write!(output, "    ; -- else -- \n").unwrap();
                         write!(output, "    jmp addr_{} \n", end_block).unwrap();
-                        write!(output, "addr_{}: \n", instruction_pointer).unwrap();
+                        write!(output, "addr_{}: \n", instruction_pointer + 1).unwrap();
                     } else {
                         self.invalid_reference(&format!(
                             "`else` does not have reference to it's `end` block in line {}",
                             operation.line
                         ));
                     }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::While => {
+                    write!(output, "    ; -- while -- \n").unwrap();
+                    write!(output, "addr_{}: \n", instruction_pointer).unwrap();
+
                     instruction_pointer += 1;
                 }
 
                 OperationType::Do => {
+                    if let Some(end_block) = operation.operand {
+                        write!(output, "    ; -- do -- \n").unwrap();
+                        write!(output, "    pop rax \n").unwrap();
+                        write!(output, "    test rax, rax \n").unwrap();
+                        write!(output, "    jz addr_{} \n", end_block).unwrap();
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`then` does not have reference to the `end` block in line {}",
+                            operation.line
+                        ));
+                    }
+
                     instruction_pointer += 1;
                 }
 
                 OperationType::End => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- end -- \n").unwrap();
-                    write!(output, "addr_{}: \n", instruction_pointer).unwrap();
+                    write!(output, "addr_{}: \n", instruction_pointer + 1).unwrap();
+                    if let Some(jump_address) = operation.operand {
+                        write!(output, "    jmp addr_{} \n", jump_address).unwrap();
+                    }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Dump => {
-                    instruction_pointer += 1;
-
                     write!(output, "    ; -- dump -- \n").unwrap();
                     write!(output, "    pop rdi \n").unwrap();
                     write!(output, "    call dump \n").unwrap();
+
+                    instruction_pointer += 1;
                 }
             }
         }
