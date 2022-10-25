@@ -1,4 +1,4 @@
 # Special operators
 
 10
-dup .         # duplicates top most stack item
+dup dump        # `dup` duplicates top most stack item

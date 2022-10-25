@@ -209,10 +209,10 @@ impl Compiler {
 
                 OperationType::End => {
                     write!(output, "    ; -- end -- \n").unwrap();
-                    write!(output, "addr_{}: \n", instruction_pointer + 1).unwrap();
                     if let Some(jump_address) = operation.operand {
                         write!(output, "    jmp addr_{} \n", jump_address).unwrap();
                     }
+                    write!(output, "addr_{}: \n", instruction_pointer + 1).unwrap();
 
                     instruction_pointer += 1;
                 }

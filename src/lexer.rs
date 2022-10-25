@@ -136,7 +136,7 @@ impl Lexer {
                         ));
                     }
 
-                    "." => {
+                    "dump" => {
                         program.push(Operation::new(OperationType::Dump, None, self.line_number));
                         crossrefernced_program.push(Operation::new(
                             OperationType::Dump,
