@@ -149,14 +149,6 @@ impl Interpreter {
                     }
                 }
 
-                OperationType::While => {
-                    instruction_pointer += 1;
-                }
-
-                OperationType::Do => {
-                    instruction_pointer += 1;
-                }
-
                 OperationType::Else => {
                     if let Some(end_block) = operation.operand {
                         instruction_pointer = end_block as usize;
@@ -170,7 +162,43 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::While => {
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Do => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`do` operation requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    if let Some(end_block) = operation.operand {
+                        if a == 0 {
+                            instruction_pointer = (end_block) as usize;
+                        } else {
+                            instruction_pointer += 1;
+                        }
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`then` does not have reference to it's `end` or `else` block in line {}",
+                            operation.line
+                        ));
+                    }
+                }
+
                 OperationType::End => {
+                    if let Some(starting_block) = operation.operand {
+                        instruction_pointer = starting_block as usize;
+                    } else {
+                        self.invalid_reference(&format!(
+                            "`end` does not have reference to it's starting block in line {}",
+                            operation.line
+                        ));
+                    }
+
                     instruction_pointer += 1;
                 }
 

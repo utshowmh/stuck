@@ -183,6 +183,10 @@ impl Lexer {
             match operation.op_type {
                 OperationType::Then => block_references.push(operation_index),
 
+                OperationType::While => block_references.push(operation_index),
+
+                OperationType::Do => block_references.push(operation_index),
+
                 OperationType::Else => {
                     if let Some(if_block) = block_references.pop() {
                         block_references.push(operation_index);
@@ -212,6 +216,13 @@ impl Lexer {
                         match &opening_block.op_type {
                             OperationType::Then => {
                                 opening_block.operand = Some((operation_index + 1) as Integer);
+                            }
+
+                            OperationType::Do => {
+                                opening_block.operand = Some((operation_index + 1) as Integer);
+                                let end = &mut crossreferenced_program[operation_index];
+                                let while_block = block_references.pop().unwrap();
+                                end.operand = Some(while_block as Integer);
                             }
 
                             OperationType::Else => {
