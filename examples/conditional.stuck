@@ -1,9 +1,0 @@
-# Conditional control flow
-
-if 0 then
-    420 dump
-else 1 then
-    69 dump
-else
-    1 dump
-end
