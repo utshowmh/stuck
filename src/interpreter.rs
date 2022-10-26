@@ -62,6 +62,20 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Dump => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`.` operation requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    println!("{}", a);
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::Plus => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
@@ -92,6 +106,36 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Multiplication => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`*` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    self.stack.push(a * b);
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Division => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`/` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    self.stack.push(b / a);
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::Equal => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
@@ -118,6 +162,21 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
                     self.stack.push((b > a) as Integer);
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Less => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`<` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    self.stack.push((b < a) as Integer);
 
                     instruction_pointer += 1;
                 }
@@ -193,20 +252,6 @@ impl Interpreter {
                     } else {
                         instruction_pointer += 1;
                     }
-                }
-
-                OperationType::Dump => {
-                    if self.stack.len() < 1 {
-                        self.stack_underflow(&format!(
-                            "`.` operation requires one operand in line {}",
-                            operation.line
-                        ));
-                    }
-
-                    let a = self.stack.pop().unwrap();
-                    println!("{}", a);
-
-                    instruction_pointer += 1;
                 }
             }
         }

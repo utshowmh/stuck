@@ -1,0 +1,9 @@
+# Conditional control flow
+
+if 100 50 < then
+    69 dump
+else 100 50 > then
+    420 dump
+else
+    96 dump
+end

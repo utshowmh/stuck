@@ -7,9 +7,12 @@ pub enum OperationType {
 
     Plus,
     Minus,
+    Multiplication,
+    Division,
 
     Equal,
     Greater,
+    Less,
 
     If,
     Then,

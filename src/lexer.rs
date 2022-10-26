@@ -51,6 +51,32 @@ impl Lexer {
                         ));
                     }
 
+                    "*" => {
+                        program.push(Operation::new(
+                            OperationType::Multiplication,
+                            None,
+                            self.line_number,
+                        ));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Multiplication,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
+                    "/" => {
+                        program.push(Operation::new(
+                            OperationType::Division,
+                            None,
+                            self.line_number,
+                        ));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Division,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
                     "=" => {
                         program.push(Operation::new(OperationType::Equal, None, self.line_number));
                         crossrefernced_program.push(Operation::new(
@@ -68,6 +94,15 @@ impl Lexer {
                         ));
                         crossrefernced_program.push(Operation::new(
                             OperationType::Greater,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
+                    "<" => {
+                        program.push(Operation::new(OperationType::Less, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Less,
                             None,
                             self.line_number,
                         ));
