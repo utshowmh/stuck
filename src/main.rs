@@ -1,4 +1,3 @@
-mod compiler;
 mod global;
 mod interpreter;
 mod lexer;
@@ -6,7 +5,6 @@ mod operation;
 
 use std::{env::args, process::exit};
 
-use compiler::Compiler;
 use interpreter::Interpreter;
 
 fn main() {
@@ -32,10 +30,6 @@ fn main() {
                     let mut interpreter = Interpreter::new();
                     interpreter.run(source_path);
                 }
-                "c" => {
-                    let mut compiler = Compiler::new();
-                    compiler.run(source_path);
-                }
                 unknown => {
                     help(Some(&format!("Unknown flag `{}`", unknown)));
                 }
@@ -50,11 +44,11 @@ fn main() {
 fn help(message: Option<&str>) {
     println!(
         "\
-Program:    STUCK
-Subcommends:
-        <source_file>       :   interprets the file.
-        <source_file> i     :   interprets the file.
-        <source_file> c     :   compiles the file.
+program: stuck
+usage: stuck [subcommands]
+subcommands:
+        [source_file]       :   interprets the file.
+        [source_file] i     :   interprets the file.
         help                :   prints this page./
     "
     );

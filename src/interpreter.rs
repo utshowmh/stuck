@@ -158,8 +158,6 @@ impl Interpreter {
                             operation.line
                         ));
                     }
-
-                    instruction_pointer += 1;
                 }
 
                 OperationType::While => {
@@ -183,7 +181,7 @@ impl Interpreter {
                         }
                     } else {
                         self.invalid_reference(&format!(
-                            "`then` does not have reference to it's `end` or `else` block in line {}",
+                            "`do` does not have reference to it's `end` block in line {}",
                             operation.line
                         ));
                     }
@@ -193,13 +191,8 @@ impl Interpreter {
                     if let Some(starting_block) = operation.operand {
                         instruction_pointer = starting_block as usize;
                     } else {
-                        self.invalid_reference(&format!(
-                            "`end` does not have reference to it's starting block in line {}",
-                            operation.line
-                        ));
+                        instruction_pointer += 1;
                     }
-
-                    instruction_pointer += 1;
                 }
 
                 OperationType::Dump => {

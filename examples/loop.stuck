@@ -4,4 +4,9 @@
 while dup 0 > do
     dup dump
     1 -
+    if 1 then
+        420 dump
+    else
+        69 dump
+    end
 end

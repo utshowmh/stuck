@@ -199,7 +199,7 @@ impl Lexer {
 
                             opening_block => {
                                 self.error(&format!(
-                                    "Can't close `end` with `{:#?}`",
+                                    "Can't use `else` with `{:#?}`",
                                     opening_block
                                 ));
                             }
