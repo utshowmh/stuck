@@ -22,7 +22,7 @@ This is a toy language I'm devoloping in order to learn how compilers, interpret
 
 ## Inspiration
 
-This project is heavily inspired by Alexey Kutepov's [Porth](https://gitlab.com/tsoding/porth).
+This project was initially inspired by Alexey Kutepov's [Porth](https://gitlab.com/tsoding/porth).
 
 </br>
 
