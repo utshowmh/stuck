@@ -1,0 +1,48 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "stuck",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "name": "comment.line",
+      "begin": "#",
+      "end": "\n",
+      "patterns": [
+        {
+          "name": "comment.line",
+          "match": "#"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.stuck",
+          "match": "\\b(var|if|then|else|while|do|end|dump|@|+|-|*|/|=|>|<)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.stuck",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.stuck",
+          "match": "\\\\."
+        }
+      ]
+    }
+  },
+  "scopeName": "source.stk"
+}

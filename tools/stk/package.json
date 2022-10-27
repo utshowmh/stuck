@@ -1,0 +1,25 @@
+{
+  "name": "stk",
+  "displayName": "stk",
+  "description": "stuck language support",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.72.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "stuck",
+      "aliases": ["stuck", "stuck"],
+      "extensions": ["stk"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "stuck",
+      "scopeName": "source.stk",
+      "path": "./syntaxes/stuck.tmLanguage.json"
+    }]
+  }
+}

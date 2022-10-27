@@ -1,6 +1,6 @@
-# Arithmetic operators
+# Woeking with Arithmetic Operators
 
-210 210 + dump      # it's like 210 + 210.
-1000 580 - dump     # it's like 1000 - 580.
-42 10 * dump        # it's like 1000 * 580.
-4200 10 / dump      # it's like 1000 / 580.
+210 210 + dump      # it's like 210 + 210
+1000 580 - dump     # it's like 1000 - 580
+42 10 * dump        # it's like 1000 * 580
+4200 10 / dump      # it's like 1000 / 580

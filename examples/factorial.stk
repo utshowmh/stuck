@@ -1,9 +1,9 @@
-var 10 @counter
-var 1 @fatctorial
+var 10 @limit               # nth number (calculate until)
+var 1 @fatctorial           # calculated factorial
 
-while counter 0 > do
-    fatctorial counter * @fatctorial
-    counter 1 - @counter
+while limit 0 > do
+    fatctorial limit * @fatctorial    # calculates factorial (using n * n - 1 * ... * 1)
+    limit 1 - @limit                    # updating the limit
 end
 
-fatctorial dump
+fatctorial dump             # prints factorial

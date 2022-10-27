@@ -1,6 +1,6 @@
-# Working with variables
+# Working with Variables
 
-var 400 @a        # declares a variable
-a dump
-a 20 + @a         # mutates a (it's like a = a + 20)
-a dump            # pops and prints
+var 400 @number        # declares a variable called number (it's like number = 400)
+number dump            # prints operand (it's like dump(number))
+number 20 + @number    # mutates number (it's like number = number + 20)
+number dump            # prints updated operand

@@ -1,8 +1,8 @@
-# Comparison operators
+# Working with Comparison Operators
 
-var 420 @a
-var 69 @b
+var 420 @x
+var 69 @y
 
-a b = dump      # a is equal to b
-a b > dump      # a is greater than b
-a b < dump      # a is less than b
+x y = dump      # checks if x is equal to y (it's like x == y)
+x y > dump      # checks if x is greater than y (it's like x > y)
+x y < dump      # checks if x is less than y (it's like x < y)

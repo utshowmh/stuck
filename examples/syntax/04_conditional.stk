@@ -1,11 +1,12 @@
-# Conditional control flow
+# Working with Conditional Control Flow
 
-var 100 @a
+var 100 @x
+var 50 @y
 
-if a 50 < then
+if x y < then      # `then` takes the operand and if it's 0 (true) then jumps to next `else` or `end` otherwise executes until found any `else` or `end`
     69 dump
-else a 50 > then
+else x y > then
     420 dump
 else
     96 dump
-end
+end                 # `end` ends the `if` block
