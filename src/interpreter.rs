@@ -71,9 +71,18 @@ impl Interpreter {
                 OperationType::Identifier => {
                     match &operation.operand.as_ref().unwrap() {
                         Object::Identifier(identifier) => {
-                            if let Some(variable) = self.variables.get(&identifier.to_string()) {
+                            if let Some(variable) = self.variables.get(identifier) {
                                 match variable {
-                                    Object::Number(number) => self.stack.push(number.to_owned()),
+                                    Object::Number(number) => {
+                                        if let Some(number) = self.stack.pop() {
+                                            self.variables.insert(
+                                                identifier.to_string(),
+                                                Object::Number(number),
+                                            );
+                                        } else {
+                                            self.stack.push(number.to_owned());
+                                        }
+                                    }
                                     _ => {}
                                 }
                             } else {

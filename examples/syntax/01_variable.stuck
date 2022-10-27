@@ -1,5 +1,6 @@
-# Special operators
+# Working with variables
 
-420             # pushes 420
-var 100 a       # declares a variable
-dump            # pops and print
+var 400 a       # declares a variable
+a dump
+a 20 + a        # mutates a (it's like a = a + 20)
+a dump          # pops and prints
