@@ -1,8 +1,0 @@
-# Comparison operators
-
-var 420 a
-var 69 b
-
-a b = dump      # a is equal to b
-a b > dump      # a is greater than b
-a b < dump      # a is less than b

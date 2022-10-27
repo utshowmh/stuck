@@ -1,0 +1,9 @@
+var 10 @counter
+var 1 @fatctorial
+
+while counter 0 > do
+    fatctorial counter * @fatctorial
+    counter 1 - @counter
+end
+
+fatctorial dump

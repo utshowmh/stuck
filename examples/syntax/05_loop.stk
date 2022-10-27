@@ -1,0 +1,8 @@
+# loops
+
+var 10 @a
+
+while a 0 > do
+    a dump
+    a 1 - @a
+end

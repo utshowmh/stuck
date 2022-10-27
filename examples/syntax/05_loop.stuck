@@ -1,7 +1,0 @@
-# loops
-
-var 10 a
-
-while a 0 > do
-    a dump
-end

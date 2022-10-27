@@ -1,0 +1,8 @@
+var 0 @count
+var 100 @limit
+
+while count limit < do
+    count 1 + count
+    count 1 + @count
+    count dump
+end

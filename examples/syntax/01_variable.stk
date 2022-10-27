@@ -1,0 +1,6 @@
+# Working with variables
+
+var 400 @a        # declares a variable
+a dump
+a 20 + @a         # mutates a (it's like a = a + 20)
+a dump            # pops and prints

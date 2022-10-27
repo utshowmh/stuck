@@ -63,7 +63,7 @@ impl Interpreter {
                     }
 
                     let a = self.stack.pop().unwrap();
-                    println!("{:?}", a);
+                    println!("{}", a);
 
                     instruction_pointer += 1;
                 }
@@ -71,27 +71,43 @@ impl Interpreter {
                 OperationType::Identifier => {
                     match &operation.operand.as_ref().unwrap() {
                         Object::Identifier(identifier) => {
-                            if let Some(variable) = self.variables.get(identifier) {
-                                match variable {
-                                    Object::Number(number) => {
-                                        if let Some(number) = self.stack.pop() {
-                                            self.variables.insert(
-                                                identifier.to_string(),
-                                                Object::Number(number),
-                                            );
-                                        } else {
-                                            self.stack.push(number.to_owned());
-                                        }
+                            if identifier.starts_with("@") {
+                                let identifier = identifier.strip_prefix("@").unwrap();
+                                if let Some(_) = self.variables.get(identifier) {
+                                    if let Some(number) = self.stack.pop() {
+                                        self.variables
+                                            .insert(identifier.to_string(), Object::Number(number));
+                                    } else {
+                                        self.stack_underflow(&format!(
+                                            "Nothing to store in `{}` in line {}",
+                                            identifier, operation.line
+                                        ));
                                     }
-                                    _ => {}
+                                } else {
+                                    let a = self.stack.pop().unwrap_or_else(|| {
+                                        self.stack_underflow(&format!(
+                                            "Nothing to store in `{}` in line {}",
+                                            identifier, operation.line
+                                        ));
+                                        exit(1);
+                                    });
+                                    self.variables
+                                        .insert(identifier.to_string(), Object::Number(a));
                                 }
                             } else {
-                                let a = self.stack.pop().unwrap_or_else(|| {
-                                    self.stack_underflow("`identifier` requires an `object`.");
-                                    exit(1);
-                                });
-                                self.variables
-                                    .insert(identifier.to_string(), Object::Number(a));
+                                if let Some(variable) = self.variables.get(identifier) {
+                                    match variable {
+                                        Object::Number(number) => {
+                                            self.stack.push(number.to_owned())
+                                        }
+                                        _ => {}
+                                    }
+                                } else {
+                                    self.undefined_variable(&format!(
+                                        "Variable `{}` is not defined in line {}",
+                                        identifier, operation.line
+                                    ));
+                                }
                             }
                         }
                         _ => {
@@ -333,6 +349,10 @@ impl Interpreter {
 
     fn stack_underflow(&self, message: &str) {
         self.error("StackUnderflow", message);
+    }
+
+    fn undefined_variable(&self, message: &str) {
+        self.error("Undefined Variable", message);
     }
 
     fn invalid_reference(&self, message: &str) {

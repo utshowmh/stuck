@@ -1,5 +1,0 @@
-var 0 a
-while a 100 < do
-    a 1 + a
-    a dump
-end
