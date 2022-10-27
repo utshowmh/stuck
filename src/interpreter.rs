@@ -1,14 +1,15 @@
-use std::{fs::read_to_string, process::exit};
+use std::{collections::HashMap, fs::read_to_string, process::exit};
 
 use crate::{
-    global::Integer,
     lexer::Lexer,
+    object::{Number, Object},
     operation::{Operation, OperationType},
 };
 
 pub struct Interpreter {
     program: Vec<Operation>,
-    stack: Vec<Integer>,
+    stack: Vec<Number>,
+    variables: HashMap<String, Object>,
 }
 
 impl Interpreter {
@@ -16,6 +17,7 @@ impl Interpreter {
         Self {
             program: Vec::new(),
             stack: Vec::new(),
+            variables: HashMap::new(),
         }
     }
 
@@ -39,25 +41,15 @@ impl Interpreter {
             let operation = &self.program[instruction_pointer];
 
             match operation.op_type {
-                OperationType::Push => {
-                    if let Some(operand) = operation.operand {
-                        self.stack.push(operand);
+                OperationType::Number => {
+                    if let Some(operand) = &operation.operand {
+                        match operand {
+                            Object::Number(number) => self.stack.push(number.to_owned()),
+
+                            _ => self
+                                .invalid_type(&format!("expected number, found `{:?}`", operation)),
+                        }
                     }
-
-                    instruction_pointer += 1;
-                }
-
-                OperationType::Dup => {
-                    if self.stack.len() < 1 {
-                        self.stack_underflow(&format!(
-                            "`dup` operation requires one operand in line {}",
-                            operation.line
-                        ));
-                    }
-
-                    let a = self.stack.pop().unwrap();
-                    self.stack.push(a);
-                    self.stack.push(a);
 
                     instruction_pointer += 1;
                 }
@@ -65,14 +57,47 @@ impl Interpreter {
                 OperationType::Dump => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`.` operation requires one operand in line {}",
+                            "`dump` operation requires one operand in line {}",
                             operation.line
                         ));
                     }
 
                     let a = self.stack.pop().unwrap();
-                    println!("{}", a);
+                    println!("{:?}", a);
 
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Identifier => {
+                    match &operation.operand.as_ref().unwrap() {
+                        Object::Identifier(identifier) => {
+                            if let Some(variable) = self.variables.get(&identifier.to_string()) {
+                                match variable {
+                                    Object::Number(number) => self.stack.push(number.to_owned()),
+                                    _ => {}
+                                }
+                            } else {
+                                let a = self.stack.pop().unwrap_or_else(|| {
+                                    self.stack_underflow("`identifier` requires an `object`.");
+                                    exit(1);
+                                });
+                                self.variables
+                                    .insert(identifier.to_string(), Object::Number(a));
+                            }
+                        }
+                        _ => {
+                            self.unknown_error(&format!(
+                                "could not recognige the identifier in line {}",
+                                operation.line
+                            ));
+                            exit(1);
+                        }
+                    };
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Variable => {
                     instruction_pointer += 1;
                 }
 
@@ -146,7 +171,7 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    self.stack.push((a == b) as Integer);
+                    self.stack.push((a == b) as Number);
 
                     instruction_pointer += 1;
                 }
@@ -161,7 +186,7 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    self.stack.push((b > a) as Integer);
+                    self.stack.push((b > a) as Number);
 
                     instruction_pointer += 1;
                 }
@@ -176,7 +201,7 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    self.stack.push((b < a) as Integer);
+                    self.stack.push((b < a) as Number);
 
                     instruction_pointer += 1;
                 }
@@ -194,11 +219,21 @@ impl Interpreter {
                     }
 
                     let a = self.stack.pop().unwrap();
-                    if let Some(end_block) = operation.operand {
-                        if a == 0 {
-                            instruction_pointer = end_block as usize;
-                        } else {
-                            instruction_pointer += 1;
+                    if let Some(end_block) = &operation.operand {
+                        match end_block {
+                            Object::Number(number) => {
+                                if a == 0 {
+                                    instruction_pointer = number.to_owned() as usize;
+                                } else {
+                                    instruction_pointer += 1;
+                                }
+                            }
+                            invalid_type => {
+                                self.invalid_type(&format!(
+                                    "expected integer, found `{:?}`",
+                                    invalid_type
+                                ));
+                            }
                         }
                     } else {
                         self.invalid_reference(&format!(
@@ -209,8 +244,18 @@ impl Interpreter {
                 }
 
                 OperationType::Else => {
-                    if let Some(end_block) = operation.operand {
-                        instruction_pointer = end_block as usize;
+                    if let Some(end_block) = &operation.operand {
+                        match end_block {
+                            Object::Number(number) => {
+                                instruction_pointer = number.to_owned() as usize;
+                            }
+                            invalid_type => {
+                                self.invalid_type(&format!(
+                                    "expected integer, found `{:?}`",
+                                    invalid_type
+                                ));
+                            }
+                        }
                     } else {
                         self.invalid_reference(&format!(
                             "`else` does not have reference to it's `end` block in line {}",
@@ -232,11 +277,21 @@ impl Interpreter {
                     }
 
                     let a = self.stack.pop().unwrap();
-                    if let Some(end_block) = operation.operand {
-                        if a == 0 {
-                            instruction_pointer = (end_block) as usize;
-                        } else {
-                            instruction_pointer += 1;
+                    if let Some(end_block) = &operation.operand {
+                        match end_block {
+                            Object::Number(number) => {
+                                if a == 0 {
+                                    instruction_pointer = number.to_owned() as usize;
+                                } else {
+                                    instruction_pointer += 1;
+                                }
+                            }
+                            invalid_type => {
+                                self.invalid_type(&format!(
+                                    "expected integer, found `{:?}`",
+                                    invalid_type
+                                ));
+                            }
                         }
                     } else {
                         self.invalid_reference(&format!(
@@ -247,8 +302,18 @@ impl Interpreter {
                 }
 
                 OperationType::End => {
-                    if let Some(starting_block) = operation.operand {
-                        instruction_pointer = starting_block as usize;
+                    if let Some(starting_block) = &operation.operand {
+                        match starting_block {
+                            Object::Number(number) => {
+                                instruction_pointer = number.to_owned() as usize;
+                            }
+                            invalid_type => {
+                                self.invalid_type(&format!(
+                                    "expected integer, found `{:?}`",
+                                    invalid_type
+                                ));
+                            }
+                        }
                     } else {
                         instruction_pointer += 1;
                     }
@@ -263,6 +328,14 @@ impl Interpreter {
 
     fn invalid_reference(&self, message: &str) {
         self.error("Invalid Reference", message);
+    }
+
+    fn invalid_type(&self, message: &str) {
+        self.error("Invalid Type", message);
+    }
+
+    fn unknown_error(&self, message: &str) {
+        self.error("Unknown Error", message);
     }
 
     fn error(&self, e_type: &str, message: &str) {

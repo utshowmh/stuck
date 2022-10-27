@@ -1,0 +1,3 @@
+var 100 a
+var 100 b
+a b + dump

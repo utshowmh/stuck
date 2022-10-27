@@ -1,5 +1,8 @@
 # Comparison operators
 
-420 69 = dump      # 420 is equal to 69
-420 69 > dump      # 420 is greater than 69
-420 69 < dump      # 420 is less than 69
+var 420 a
+var 69 b
+
+a b = dump      # a is equal to b
+a b > dump      # a is greater than b
+a b < dump      # a is less than b

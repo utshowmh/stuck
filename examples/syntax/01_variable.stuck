@@ -1,0 +1,5 @@
+# Special operators
+
+420             # pushes 420
+var 100 a       # declares a variable
+dump            # pops and print

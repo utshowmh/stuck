@@ -1,9 +1,11 @@
-use crate::global::Integer;
+use crate::object::Object;
 
 #[derive(Debug)]
 pub enum OperationType {
-    Push,
-    Dup,
+    Identifier,
+    Number,
+
+    Variable,
 
     Plus,
     Minus,
@@ -27,12 +29,12 @@ pub enum OperationType {
 #[derive(Debug)]
 pub struct Operation {
     pub op_type: OperationType,
-    pub operand: Option<Integer>,
+    pub operand: Option<Object>,
     pub line: usize,
 }
 
 impl Operation {
-    pub fn new(op_type: OperationType, operand: Option<Integer>, line: usize) -> Self {
+    pub fn new(op_type: OperationType, operand: Option<Object>, line: usize) -> Self {
         Self {
             op_type,
             operand,

@@ -1,7 +1,7 @@
 use std::process::exit;
 
 use crate::{
-    global::Integer,
+    object::Object,
     operation::{Operation, OperationType},
 };
 
@@ -108,6 +108,28 @@ impl Lexer {
                         ));
                     }
 
+                    "dump" => {
+                        program.push(Operation::new(OperationType::Dump, None, self.line_number));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Dump,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
+                    "var" => {
+                        program.push(Operation::new(
+                            OperationType::Variable,
+                            None,
+                            self.line_number,
+                        ));
+                        crossrefernced_program.push(Operation::new(
+                            OperationType::Variable,
+                            None,
+                            self.line_number,
+                        ));
+                    }
+
                     "if" => {
                         program.push(Operation::new(OperationType::If, None, self.line_number));
                         crossrefernced_program.push(Operation::new(
@@ -162,38 +184,29 @@ impl Lexer {
                         ));
                     }
 
-                    "dup" => {
-                        program.push(Operation::new(OperationType::Dup, None, self.line_number));
-                        crossrefernced_program.push(Operation::new(
-                            OperationType::Dup,
-                            None,
-                            self.line_number,
-                        ));
-                    }
-
-                    "dump" => {
-                        program.push(Operation::new(OperationType::Dump, None, self.line_number));
-                        crossrefernced_program.push(Operation::new(
-                            OperationType::Dump,
-                            None,
-                            self.line_number,
-                        ));
-                    }
-
                     token => {
-                        if let Ok(number) = token.parse() {
+                        if let Ok(number) = token.parse::<i64>() {
                             program.push(Operation::new(
-                                OperationType::Push,
-                                Some(number),
+                                OperationType::Number,
+                                Some(Object::Number(number)),
                                 self.line_number,
                             ));
                             crossrefernced_program.push(Operation::new(
-                                OperationType::Push,
-                                Some(number),
+                                OperationType::Number,
+                                Some(Object::Number(number)),
                                 self.line_number,
                             ));
                         } else {
-                            self.error(&format!("Unknown Token `{:#?}`", token))
+                            program.push(Operation::new(
+                                OperationType::Identifier,
+                                Some(Object::Identifier(token.to_string())),
+                                self.line_number,
+                            ));
+                            crossrefernced_program.push(Operation::new(
+                                OperationType::Identifier,
+                                Some(Object::Identifier(token.to_string())),
+                                self.line_number,
+                            ));
                         }
                     }
                 }
@@ -229,7 +242,8 @@ impl Lexer {
 
                         match &if_block.op_type {
                             OperationType::Then => {
-                                if_block.operand = Some((operation_index + 1) as Integer);
+                                if_block.operand =
+                                    Some(Object::Number((operation_index + 1) as i64));
                             }
 
                             opening_block => {
@@ -250,18 +264,21 @@ impl Lexer {
 
                         match &opening_block.op_type {
                             OperationType::Then => {
-                                opening_block.operand = Some((operation_index + 1) as Integer);
+                                opening_block.operand =
+                                    Some(Object::Number((operation_index + 1) as i64));
                             }
 
                             OperationType::Do => {
-                                opening_block.operand = Some((operation_index + 1) as Integer);
+                                opening_block.operand =
+                                    Some(Object::Number((operation_index + 1) as i64));
                                 let end = &mut crossreferenced_program[operation_index];
                                 let while_block = block_references.pop().unwrap();
-                                end.operand = Some(while_block as Integer);
+                                end.operand = Some(Object::Number((while_block) as i64));
                             }
 
                             OperationType::Else => {
-                                opening_block.operand = Some((operation_index + 1) as Integer);
+                                opening_block.operand =
+                                    Some(Object::Number((operation_index + 1) as i64));
                             }
 
                             opening_block => {

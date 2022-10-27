@@ -1,6 +1,6 @@
-mod global;
 mod interpreter;
 mod lexer;
+mod object;
 mod operation;
 
 use std::{env::args, process::exit};
