@@ -272,7 +272,13 @@ impl Lexer {
                                 opening_block.operand =
                                     Some(Object::Number((operation_index + 1) as Number));
                                 let end = &mut crossreferenced_program[operation_index];
-                                let while_block = block_references.pop().unwrap();
+                                let while_block = block_references.pop().unwrap_or_else(|| {
+                                    self.error(&format!(
+                                        "Cannot use use `do` without `while` in line {}",
+                                        self.line_number
+                                    ));
+                                    exit(1);
+                                });
                                 end.operand = Some(Object::Number((while_block) as Number));
                             }
 
