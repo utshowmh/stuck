@@ -1,7 +1,7 @@
-#[derive(Debug, PartialEq, Eq, Hash)]
+pub type Number = f64;
+
+#[derive(Debug, PartialEq)]
 pub enum Object {
     Identifier(String),
-    Number(i64),
+    Number(Number),
 }
-
-pub type Number = i64;

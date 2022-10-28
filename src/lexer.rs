@@ -1,7 +1,7 @@
 use std::process::exit;
 
 use crate::{
-    object::Object,
+    object::{Number, Object},
     operation::{Operation, OperationType},
 };
 
@@ -185,7 +185,7 @@ impl Lexer {
                     }
 
                     token => {
-                        if let Ok(number) = token.parse::<i64>() {
+                        if let Ok(number) = token.parse::<Number>() {
                             program.push(Operation::new(
                                 OperationType::Number,
                                 Some(Object::Number(number)),
@@ -243,7 +243,7 @@ impl Lexer {
                         match &if_block.op_type {
                             OperationType::Then => {
                                 if_block.operand =
-                                    Some(Object::Number((operation_index + 1) as i64));
+                                    Some(Object::Number((operation_index + 1) as Number));
                             }
 
                             opening_block => {
@@ -265,20 +265,20 @@ impl Lexer {
                         match &opening_block.op_type {
                             OperationType::Then => {
                                 opening_block.operand =
-                                    Some(Object::Number((operation_index + 1) as i64));
+                                    Some(Object::Number((operation_index + 1) as Number));
                             }
 
                             OperationType::Do => {
                                 opening_block.operand =
-                                    Some(Object::Number((operation_index + 1) as i64));
+                                    Some(Object::Number((operation_index + 1) as Number));
                                 let end = &mut crossreferenced_program[operation_index];
                                 let while_block = block_references.pop().unwrap();
-                                end.operand = Some(Object::Number((while_block) as i64));
+                                end.operand = Some(Object::Number((while_block) as Number));
                             }
 
                             OperationType::Else => {
                                 opening_block.operand =
-                                    Some(Object::Number((operation_index + 1) as i64));
+                                    Some(Object::Number((operation_index + 1) as Number));
                             }
 
                             opening_block => {

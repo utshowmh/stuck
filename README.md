@@ -4,7 +4,7 @@
 
 ## About
 
-Stuck is a interpreted [stack based programing language](https://en.wikipedia.org/wiki/Stack-oriented_programming) written in [Rust](https://www.rust-lang.org).
+Stuck is an interpreted [stack based programing language](https://en.wikipedia.org/wiki/Stack-oriented_programming) written in [Rust](https://www.rust-lang.org).
 
 </br>
 

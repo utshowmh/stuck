@@ -196,7 +196,7 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    self.stack.push((a == b) as Number);
+                    self.stack.push(((a == b) as usize) as Number);
 
                     instruction_pointer += 1;
                 }
@@ -211,7 +211,7 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    self.stack.push((b > a) as Number);
+                    self.stack.push(((b > a) as usize) as Number);
 
                     instruction_pointer += 1;
                 }
@@ -226,7 +226,7 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    self.stack.push((b < a) as Number);
+                    self.stack.push(((b < a) as usize) as Number);
 
                     instruction_pointer += 1;
                 }
@@ -247,7 +247,7 @@ impl Interpreter {
                     if let Some(end_block) = &operation.operand {
                         match end_block {
                             Object::Number(number) => {
-                                if a == 0 {
+                                if a == 0. {
                                     instruction_pointer = number.to_owned() as usize;
                                 } else {
                                     instruction_pointer += 1;
@@ -305,7 +305,7 @@ impl Interpreter {
                     if let Some(end_block) = &operation.operand {
                         match end_block {
                             Object::Number(number) => {
-                                if a == 0 {
+                                if a == 0. {
                                     instruction_pointer = number.to_owned() as usize;
                                 } else {
                                     instruction_pointer += 1;
@@ -348,7 +348,7 @@ impl Interpreter {
     }
 
     fn stack_underflow(&self, message: &str) {
-        self.error("StackUnderflow", message);
+        self.error("Stack Underflow", message);
     }
 
     fn undefined_variable(&self, message: &str) {
