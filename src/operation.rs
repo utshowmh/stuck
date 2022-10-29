@@ -1,10 +1,11 @@
 use crate::object::Object;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum OperationType {
     Identifier,
     Number,
 
+    Assignment,
     Variable,
 
     Plus,
@@ -23,10 +24,10 @@ pub enum OperationType {
     Do,
     End,
 
-    Dump,
+    Print,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Operation {
     pub op_type: OperationType,
     pub operand: Option<Object>,

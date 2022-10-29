@@ -3,7 +3,7 @@ var 1 @fatctorial           # calculated factorial
 
 while limit 0 > do
     fatctorial limit * @fatctorial    # calculates factorial (using n * n - 1 * ... * 1)
-    limit 1 - @limit                    # updating the limit
+    limit 1 - @limit                  # updating the limit
 end
 
-fatctorial dump             # prints factorial
+fatctorial print            # prints factorial

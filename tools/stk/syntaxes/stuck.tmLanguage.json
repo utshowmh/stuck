@@ -6,6 +6,9 @@
       "include": "#comments"
     },
     {
+      "include": "#numbers"
+    },
+    {
       "include": "#keywords"
     },
     {
@@ -24,11 +27,27 @@
         }
       ]
     },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric",
+          "match": " \\d+"
+        }
+      ]
+    },
+    "variable": {
+      "patterns": [
+        {
+          "name": "variable.name",
+          "match": "\\ @[a-z]|[A-Z]\\ "
+        }
+      ]
+    },
     "keywords": {
       "patterns": [
         {
           "name": "keyword.control.stuck",
-          "match": "\\b(var|if|then|else|while|do|end|dump|@|+|-|*|/|=|>|<)\\b"
+          "match": "\\b(var|if|then|else|while|do|end|print)\\b"
         }
       ]
     },

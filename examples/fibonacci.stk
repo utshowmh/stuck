@@ -1,15 +1,15 @@
-var 0 @fib_0
-var 1 @fib_1
+var 0 @fib0
+var 1 @fib1
 var 0 @fib
 
 var 80 @n
 var 1 @i
 
 while i n < do
-    fib_0 fib_1 + @fib
-    fib_1 @fib_0
-    fib @fib_1
+    fib0 fib1 + @fib
+    fib1 @fib0
+    fib @fib1
     i 1 + @i
 end
 
-fib dump
+fib print 

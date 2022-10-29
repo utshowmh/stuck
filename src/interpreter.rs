@@ -1,15 +1,16 @@
 use std::{collections::HashMap, fs::read_to_string, process::exit};
 
 use crate::{
-    lexer::Lexer,
     object::{Number, Object},
     operation::{Operation, OperationType},
+    tokenizer::Tokenizer,
 };
 
 pub struct Interpreter {
     program: Vec<Operation>,
     stack: Vec<Number>,
     variables: HashMap<String, Object>,
+    registers: Vec<Number>,
 }
 
 impl Interpreter {
@@ -18,6 +19,7 @@ impl Interpreter {
             program: Vec::new(),
             stack: Vec::new(),
             variables: HashMap::new(),
+            registers: Vec::new(),
         }
     }
 
@@ -26,8 +28,9 @@ impl Interpreter {
             eprintln!("ERROR: {:#?}", err);
             exit(1);
         });
-        let mut lexer = Lexer::new(source);
-        self.program.append(&mut lexer.lex());
+
+        let mut tokenizer = Tokenizer::new(&source);
+        self.program = tokenizer.scan_tokens().to_vec();
 
         self.interpret();
     }
@@ -41,6 +44,43 @@ impl Interpreter {
             let operation = &self.program[instruction_pointer];
 
             match operation.op_type {
+                OperationType::Identifier => {
+                    if let Some(variable) = &operation.operand {
+                        match variable {
+                            Object::Identifier(identifier) => {
+                                if let Some(number) = self.registers.pop() {
+                                    self.variables
+                                        .insert(identifier.to_string(), Object::Number(number));
+                                } else {
+                                    if let Some(object) = self.variables.get(identifier) {
+                                        match object {
+                                            Object::Number(number) => {
+                                                self.stack.push(number.to_owned())
+                                            }
+
+                                            _ => {
+                                                self.unknown_error(&format!(
+                                                    "in line {}",
+                                                    operation.line
+                                                ));
+                                            }
+                                        }
+                                    } else {
+                                        self.undefined_variable(&format!(
+                                            "variable `{}` does not exist in line {}",
+                                            identifier, operation.line
+                                        ));
+                                    }
+                                }
+                            }
+
+                            _ => {}
+                        }
+                    }
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::Number => {
                     if let Some(operand) = &operation.operand {
                         match operand {
@@ -54,75 +94,21 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
-                OperationType::Dump => {
+                OperationType::Variable => {
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Assignment => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`dump` operation requires one operand in line {}",
+                            "can't declare variable without a value in line {}",
                             operation.line
                         ));
                     }
 
                     let a = self.stack.pop().unwrap();
-                    println!("{}", a);
+                    self.registers.push(a);
 
-                    instruction_pointer += 1;
-                }
-
-                OperationType::Identifier => {
-                    match &operation.operand.as_ref().unwrap() {
-                        Object::Identifier(identifier) => {
-                            if identifier.starts_with("@") {
-                                let identifier = identifier.strip_prefix("@").unwrap();
-                                if let Some(_) = self.variables.get(identifier) {
-                                    if let Some(number) = self.stack.pop() {
-                                        self.variables
-                                            .insert(identifier.to_string(), Object::Number(number));
-                                    } else {
-                                        self.stack_underflow(&format!(
-                                            "Nothing to store in `{}` in line {}",
-                                            identifier, operation.line
-                                        ));
-                                    }
-                                } else {
-                                    let a = self.stack.pop().unwrap_or_else(|| {
-                                        self.stack_underflow(&format!(
-                                            "Nothing to store in `{}` in line {}",
-                                            identifier, operation.line
-                                        ));
-                                        exit(1);
-                                    });
-                                    self.variables
-                                        .insert(identifier.to_string(), Object::Number(a));
-                                }
-                            } else {
-                                if let Some(variable) = self.variables.get(identifier) {
-                                    match variable {
-                                        Object::Number(number) => {
-                                            self.stack.push(number.to_owned())
-                                        }
-                                        _ => {}
-                                    }
-                                } else {
-                                    self.undefined_variable(&format!(
-                                        "Variable `{}` is not defined in line {}",
-                                        identifier, operation.line
-                                    ));
-                                }
-                            }
-                        }
-                        _ => {
-                            self.unknown_error(&format!(
-                                "could not recognige the identifier in line {}",
-                                operation.line
-                            ));
-                            exit(1);
-                        }
-                    };
-
-                    instruction_pointer += 1;
-                }
-
-                OperationType::Variable => {
                     instruction_pointer += 1;
                 }
 
@@ -246,17 +232,17 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     if let Some(end_block) = &operation.operand {
                         match end_block {
-                            Object::Number(number) => {
+                            Object::Reference(number) => {
                                 if a == 0. {
-                                    instruction_pointer = number.to_owned() as usize;
+                                    instruction_pointer = number.to_owned();
                                 } else {
                                     instruction_pointer += 1;
                                 }
                             }
                             invalid_type => {
                                 self.invalid_type(&format!(
-                                    "expected integer, found `{:?}`",
-                                    invalid_type
+                                    "can't use `{:?}` with `then` (expected integer) in line {}",
+                                    invalid_type, operation.line
                                 ));
                             }
                         }
@@ -271,13 +257,13 @@ impl Interpreter {
                 OperationType::Else => {
                     if let Some(end_block) = &operation.operand {
                         match end_block {
-                            Object::Number(number) => {
-                                instruction_pointer = number.to_owned() as usize;
+                            Object::Reference(number) => {
+                                instruction_pointer = number.to_owned();
                             }
                             invalid_type => {
                                 self.invalid_type(&format!(
-                                    "expected integer, found `{:?}`",
-                                    invalid_type
+                                    "can't use `{:?}` with `else` (expected integer) in line {}",
+                                    invalid_type, operation.line
                                 ));
                             }
                         }
@@ -304,17 +290,17 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     if let Some(end_block) = &operation.operand {
                         match end_block {
-                            Object::Number(number) => {
+                            Object::Reference(number) => {
                                 if a == 0. {
-                                    instruction_pointer = number.to_owned() as usize;
+                                    instruction_pointer = number.to_owned();
                                 } else {
                                     instruction_pointer += 1;
                                 }
                             }
                             invalid_type => {
                                 self.invalid_type(&format!(
-                                    "expected integer, found `{:?}`",
-                                    invalid_type
+                                    "can't use `{:?}` with `do` (expected integer) in line {}",
+                                    invalid_type, operation.line
                                 ));
                             }
                         }
@@ -329,13 +315,13 @@ impl Interpreter {
                 OperationType::End => {
                     if let Some(starting_block) = &operation.operand {
                         match starting_block {
-                            Object::Number(number) => {
-                                instruction_pointer = number.to_owned() as usize;
+                            Object::Reference(number) => {
+                                instruction_pointer = number.to_owned();
                             }
                             invalid_type => {
                                 self.invalid_type(&format!(
-                                    "expected integer, found `{:?}`",
-                                    invalid_type
+                                    "can't use `{:?}` with `end` (expected integer) in line {}",
+                                    invalid_type, operation.line
                                 ));
                             }
                         }
@@ -343,10 +329,26 @@ impl Interpreter {
                         instruction_pointer += 1;
                     }
                 }
+
+                OperationType::Print => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`print` operation requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    println!("{}", a);
+
+                    instruction_pointer += 1;
+                }
             }
         }
     }
+}
 
+impl Interpreter {
     fn stack_underflow(&self, message: &str) {
         self.error("Stack Underflow", message);
     }

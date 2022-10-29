@@ -5,5 +5,5 @@ var 100 @limit          # limit to count to
 
 while count limit < do
     count 1 + @count    # increaments counter variable
-    count dump          # prints counter variable
-end
+    count print         # prints counter variable
+end 

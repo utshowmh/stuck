@@ -1,7 +1,7 @@
 mod interpreter;
-mod lexer;
 mod object;
 mod operation;
+mod tokenizer;
 
 use std::{env::args, process::exit};
 

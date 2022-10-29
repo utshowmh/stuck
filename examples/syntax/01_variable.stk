@@ -1,6 +1,6 @@
 # Working with Variables
 
 var 400 @number        # declares a variable called number (it's like number = 400). you can also declare it like `400 @number`
-number dump            # prints operand (it's like dump(number))
+number print           # prints value of number (it's like print(number))
 number 20 + @number    # mutates number (it's like number = number + 20)
-number dump            # prints updated operand
+number print           # prints updated number
