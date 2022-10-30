@@ -1,67 +1,2898 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "stuck",
+  "name": "stk",
+  "scopeName": "source.stk",
   "patterns": [
     {
-      "include": "#comments"
+      "captures": {
+        "1": {
+          "name": "keyword.control.class.stk"
+        },
+        "2": {
+          "name": "entity.name.type.class.stk"
+        },
+        "4": {
+          "name": "entity.other.inherited-class.stk"
+        },
+        "5": {
+          "name": "punctuation.separator.inheritance.stk"
+        },
+        "6": {
+          "name": "variable.other.object.stk"
+        },
+        "7": {
+          "name": "punctuation.definition.variable.stk"
+        }
+      },
+      "match": "(?x)\n^\\s*(class)\\s+\n(\n  (\n    [.a-zA-Z0-9_:]+\n    (\\s*(<)\\s*[.a-zA-Z0-9_:]+)?   # class A < B\n  )\n  |\n  ((<<)\\s*[.a-zA-Z0-9_:]+)         # class << C\n)",
+      "name": "meta.class.stk"
     },
     {
-      "include": "#numbers"
+      "captures": {
+        "1": {
+          "name": "keyword.control.module.stk"
+        },
+        "2": {
+          "name": "entity.name.type.module.stk"
+        },
+        "3": {
+          "name": "entity.other.inherited-class.module.first.stk"
+        },
+        "4": {
+          "name": "punctuation.separator.inheritance.stk"
+        },
+        "5": {
+          "name": "entity.other.inherited-class.module.second.stk"
+        },
+        "6": {
+          "name": "punctuation.separator.inheritance.stk"
+        },
+        "7": {
+          "name": "entity.other.inherited-class.module.third.stk"
+        },
+        "8": {
+          "name": "punctuation.separator.inheritance.stk"
+        }
+      },
+      "match": "(?x)\n^\\s*(module)\\s+\n(\n  ([A-Z]\\w*(::))?\n  ([A-Z]\\w*(::))?\n  ([A-Z]\\w*(::))*\n  [A-Z]\\w*\n)",
+      "name": "meta.module.stk"
     },
     {
-      "include": "#keywords"
+      "comment": "Common mistake 'else if' carried over from other languages.",
+      "match": "(?<!\\.)\\belse(\\s)+if\\b",
+      "name": "invalid.deprecated.stk"
     },
     {
-      "include": "#strings"
-    }
-  ],
-  "repository": {
-    "comments": {
-      "name": "comment.line",
-      "begin": "#",
-      "end": "\n",
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.constant.hashkey.stk"
+        }
+      },
+      "comment": "symbols as hash key (1.9 syntax)",
+      "match": "(?>[a-zA-Z_]\\w*(?>[?!])?)(:)(?!:)",
+      "name": "constant.language.symbol.hashkey.stk"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.constant.stk"
+        }
+      },
+      "comment": "symbols as hash key (1.8 syntax)",
+      "match": "(?<!:)(:)(?>[a-zA-Z_]\\w*(?>[?!])?)(?=\\s*=>)",
+      "name": "constant.language.symbol.hashkey.stk"
+    },
+    {
+      "comment": "everything being a reserved word, not a value and needing a 'end' is a..",
+      "match": "(?<!\\.)\\b(else|end|for|if|var|while)\\b(?![?!])",
+      "name": "keyword.control.stk"
+    },
+    {
+      "comment": "contextual smart pair support for block parameters",
+      "match": "(?<!\\.)\\bdo\\b",
+      "name": "keyword.control.start-block.stk"
+    },
+    {
+      "comment": "contextual smart pair support",
+      "match": "(?<={)(\\s+)",
+      "name": "meta.syntax.stk.start-block"
+    },
+    {
+      "match": "(?<!\\.)\\b(alias|alias_method|break|next|redo|retry|return|super|undef|yield)\\b(?![?!])|\\bdefined\\?|\\b(block_given|iterator)\\?",
+      "name": "keyword.control.pseudo-method.stk"
+    },
+    {
+      "match": "\\bnil\\b(?![?!])",
+      "name": "constant.language.nil.stk"
+    },
+    {
+      "match": "\\b(true|false)\\b(?![?!])",
+      "name": "constant.language.boolean.stk"
+    },
+    {
+      "match": "\\b(__(FILE|LINE)__)\\b(?![?!])",
+      "name": "variable.language.stk"
+    },
+    {
+      "match": "\\bself\\b(?![?!])",
+      "name": "variable.language.self.stk"
+    },
+    {
+      "comment": "Everything being a method but having a special function is a..",
+      "match": "\\b(initialize|new|loop|include|extend|prepend|raise|fail|attr_reader|attr_writer|attr_accessor|attr|catch|throw|private|private_class_method|module_function|public|public_class_method|protected|refine|using)\\b(?![?!])",
+      "name": "keyword.other.special-method.stk"
+    },
+    {
+      "begin": "\\b(?<!\\.|::)(require|require_relative)\\b(?![?!])",
+      "captures": {
+        "1": {
+          "name": "keyword.other.special-method.stk"
+        }
+      },
+      "end": "$|(?=#|})",
+      "name": "meta.require.stk",
       "patterns": [
         {
-          "name": "comment.line",
-          "match": "#"
+          "include": "$self"
         }
       ]
     },
-    "numbers": {
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.stk"
+        }
+      },
+      "match": "(@)[a-zA-Z_]\\w*",
+      "name": "variable.other.readwrite.instance.stk"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.stk"
+        }
+      },
+      "match": "(@@)[a-zA-Z_]\\w*",
+      "name": "variable.other.readwrite.class.stk"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.stk"
+        }
+      },
+      "match": "(\\$)[a-zA-Z_]\\w*",
+      "name": "variable.other.readwrite.global.stk"
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.variable.stk"
+        }
+      },
+      "match": "(\\$)(!|@|&|`|'|\\+|\\d+|~|=|/|\\\\|,|;|\\.|<|>|_|\\*|\\$|\\?|:|\"|-[0adFiIlpv])",
+      "name": "variable.other.readwrite.global.pre-defined.stk"
+    },
+    {
+      "begin": "\\b(ENV)\\[",
+      "beginCaptures": {
+        "1": {
+          "name": "variable.other.constant.stk"
+        }
+      },
+      "end": "]",
+      "name": "meta.environment-variable.stk",
       "patterns": [
         {
-          "name": "constant.numeric",
-          "match": " \\d+"
+          "include": "$self"
         }
       ]
     },
-    "variable": {
+    {
+      "match": "\\b[A-Z]\\w*(?=((\\.|::)[A-Za-z]|\\[))",
+      "name": "support.class.stk"
+    },
+    {
+      "match": "\\b((abort|at_exit|autoload|binding|callcc|caller|caller_locations|chomp|chop|eval|exec|exit|fork|format|gets|global_variables|gsub|lambda|load|local_variables|open|p|print|printf|proc|putc|puts|rand|readline|readlines|select|set_trace_func|sleep|spawn|sprintf|srand|sub|syscall|system|test|trace_var|trap|untrace_var|warn)\\b(?![?!])|autoload\\?|exit!)",
+      "name": "support.function.kernel.stk"
+    },
+    {
+      "match": "\\b[_A-Z]\\w*\\b",
+      "name": "variable.other.constant.stk"
+    },
+    {
+      "begin": "(?x)\n(?=def\\b)                          # optimization to help Oniguruma fail fast\n(?<=^|\\s)(def)\\s+\n(\n  (?>[a-zA-Z_]\\w*(?>\\.|::))?      # method prefix\n  (?>                               # method name\n    [a-zA-Z_]\\w*(?>[?!]|=(?!>))?\n    |\n    ===?|!=|>[>=]?|<=>|<[<=]?|[%&`/\\|]|\\*\\*?|=?~|[-+]@?|\\[]=?\n  )\n)\n\\s*(\\()",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.def.stk"
+        },
+        "2": {
+          "name": "entity.name.function.stk"
+        },
+        "3": {
+          "name": "punctuation.definition.parameters.stk"
+        }
+      },
+      "comment": "The method pattern comes from the symbol pattern. See there for an explanation.",
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.parameters.stk"
+        }
+      },
+      "name": "meta.function.method.with-arguments.stk",
       "patterns": [
         {
-          "name": "variable.name",
-          "match": "\\ @[a-z]|[A-Z]\\ "
+          "begin": "(?![\\s,)])",
+          "end": "(?=,|\\)\\s*$)",
+          "patterns": [
+            {
+              "captures": {
+                "1": {
+                  "name": "storage.type.variable.stk"
+                },
+                "2": {
+                  "name": "constant.language.symbol.hashkey.parameter.function.stk"
+                },
+                "3": {
+                  "name": "punctuation.definition.constant.hashkey.stk"
+                },
+                "4": {
+                  "name": "variable.parameter.function.stk"
+                }
+              },
+              "match": "\\G([&*]?)(?:([_a-zA-Z]\\w*(:))|([_a-zA-Z]\\w*))"
+            },
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
-    "keywords": {
+    {
+      "begin": "(?x)\n(?=def\\b)                          # optimization to help Oniguruma fail fast\n(?<=^|\\s)(def)\\s+\n(\n  (?>[a-zA-Z_]\\w*(?>\\.|::))?      # method prefix\n  (?>                               # method name\n    [a-zA-Z_]\\w*(?>[?!]|=(?!>))?\n    |\n    ===?|!=|>[>=]?|<=>|<[<=]?|[%&`/\\|]|\\*\\*?|=?~|[-+]@?|\\[]=?\n  )\n)\n[ \\t]\n(?=[ \\t]*[^\\s#;])                 # make sure the following is not comment",
+      "beginCaptures": {
+        "1": {
+          "name": "keyword.control.def.stk"
+        },
+        "2": {
+          "name": "entity.name.function.stk"
+        }
+      },
+      "comment": "same as the previous rule, but without parentheses around the arguments",
+      "end": "$",
+      "name": "meta.function.method.with-arguments.stk",
       "patterns": [
         {
-          "name": "keyword.control.stuck",
-          "match": "\\b(var|if|then|else|while|do|end|print)\\b"
+          "begin": "(?![\\s,])",
+          "end": "(?=,|$)",
+          "patterns": [
+            {
+              "captures": {
+                "1": {
+                  "name": "storage.type.variable.stk"
+                },
+                "2": {
+                  "name": "constant.language.symbol.hashkey.parameter.function.stk"
+                },
+                "3": {
+                  "name": "punctuation.definition.constant.hashkey.stk"
+                },
+                "4": {
+                  "name": "variable.parameter.function.stk"
+                }
+              },
+              "match": "\\G([&*]?)(?:([_a-zA-Z]\\w*(:))|([_a-zA-Z]\\w*))"
+            },
+            {
+              "include": "$self"
+            }
+          ]
         }
       ]
     },
-    "strings": {
-      "name": "string.quoted.double.stuck",
-      "begin": "\"",
+    {
+      "captures": {
+        "1": {
+          "name": "keyword.control.def.stk"
+        },
+        "3": {
+          "name": "entity.name.function.stk"
+        }
+      },
+      "comment": " the optional name is just to catch the def also without a method-name",
+      "match": "(?x)\n(?=def\\b)                            # optimization to help Oniguruma fail fast\n(?<=^|\\s)(def)\\b\n(\n  \\s+\n  (\n    (?>[a-zA-Z_]\\w*(?>\\.|::))?      # method prefix\n    (?>                               # method name\n      [a-zA-Z_]\\w*(?>[?!]|=(?!>))?\n      |\n      ===?|!=|>[>=]?|<=>|<[<=]?|[%&`/\\|]|\\*\\*?|=?~|[-+]@?|\\[]=?\n    )\n  )\n)?",
+      "name": "meta.function.method.without-arguments.stk"
+    },
+    {
+      "match": "(?x)\n\\b\n(\n  [\\d](?>_?\\d)*                             # 100_000\n  (\\.(?![^[:space:][:digit:]])(?>_?\\d)*)?   # fractional part\n  ([eE][-+]?\\d(?>_?\\d)*)?                   # 1.23e-4\n  |\n  0\n  (?:\n    [xX]\\h(?>_?\\h)*|\n    [oO]?[0-7](?>_?[0-7])*|\n    [bB][01](?>_?[01])*|\n    [dD]\\d(?>_?\\d)*\n  )                                           # A base indicator can only be used with an integer\n)\\b",
+      "name": "constant.numeric.stk"
+    },
+    {
+      "begin": ":'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.begin.stk"
+        }
+      },
+      "comment": "symbol literal with '' delimitor",
+      "end": "'",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\['\\\\]",
+          "name": "constant.character.escape.stk"
+        }
+      ]
+    },
+    {
+      "begin": ":\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.symbol.begin.stk"
+        }
+      },
+      "comment": "symbol literal with \"\" delimitor",
       "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.interpolated.stk",
       "patterns": [
         {
-          "name": "constant.character.escape.stuck",
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "comment": "Needs higher precidence than regular expressions.",
+      "match": "(?<!\\()/=",
+      "name": "keyword.operator.assignment.augmented.stk"
+    },
+    {
+      "begin": "'",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "comment": "string literal with '' delimitor",
+      "end": "'",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.single.stk",
+      "patterns": [
+        {
+          "match": "\\\\'|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        }
+      ]
+    },
+    {
+      "begin": "\"",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "comment": "string literal with interpolation and \"\" delimitor",
+      "end": "\"",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.double.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "`",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "comment": "execute string (allows for interpolation)",
+      "end": "`",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "(?x)\n(?<![\\w)])((/))(?![?*+])\n(?=\n  (?:\\\\/|[^/])*+          # Do NOT change the order\n  /[eimnosux]*\\s*\n  (?:\n    [)\\]}#.,?:]|\\|\\||&&|<=>|=>|==|=~|!~|!=|;|$|\n    if|else|elsif|then|do|end|unless|while|until|or|and\n  )\n  |\n  $\n)",
+      "captures": {
+        "1": {
+          "name": "string.regexp.interpolated.stk"
+        },
+        "2": {
+          "name": "punctuation.section.regexp.stk"
+        }
+      },
+      "comment": "regular expression literal with interpolation",
+      "contentName": "string.regexp.interpolated.stk",
+      "end": "((/[eimnosux]*))",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        }
+      ]
+    },
+    {
+      "begin": "%r{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.begin.stk"
+        }
+      },
+      "end": "}[eimnosux]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.end.stk"
+        }
+      },
+      "name": "string.regexp.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_curly_r"
+        }
+      ]
+    },
+    {
+      "begin": "%r\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.begin.stk"
+        }
+      },
+      "end": "][eimnosux]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.end.stk"
+        }
+      },
+      "name": "string.regexp.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_brackets_r"
+        }
+      ]
+    },
+    {
+      "begin": "%r\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.begin.stk"
+        }
+      },
+      "end": "\\)[eimnosux]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.end.stk"
+        }
+      },
+      "name": "string.regexp.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_parens_r"
+        }
+      ]
+    },
+    {
+      "begin": "%r<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.begin.stk"
+        }
+      },
+      "end": ">[eimnosux]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.end.stk"
+        }
+      },
+      "name": "string.regexp.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_ltgt_r"
+        }
+      ]
+    },
+    {
+      "begin": "%r([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.begin.stk"
+        }
+      },
+      "end": "\\1[eimnosux]*",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.regexp.end.stk"
+        }
+      },
+      "name": "string.regexp.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        }
+      ]
+    },
+    {
+      "begin": "%I\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_brackets_i"
+        }
+      ]
+    },
+    {
+      "begin": "%I\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_parens_i"
+        }
+      ]
+    },
+    {
+      "begin": "%I<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_ltgt_i"
+        }
+      ]
+    },
+    {
+      "begin": "%I{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_curly_i"
+        }
+      ]
+    },
+    {
+      "begin": "%I([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "%i\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\]|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "begin": "%i\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\\\)|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "begin": "%i<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\>|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "begin": "%i{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\}|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "begin": "%i([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "comment": "Cant be named because its not neccesarily an escape.",
           "match": "\\\\."
         }
       ]
+    },
+    {
+      "begin": "%W\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_brackets_i"
+        }
+      ]
+    },
+    {
+      "begin": "%W\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_parens_i"
+        }
+      ]
+    },
+    {
+      "begin": "%W<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_ltgt_i"
+        }
+      ]
+    },
+    {
+      "begin": "%W{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_curly_i"
+        }
+      ]
+    },
+    {
+      "begin": "%W([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "%w\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\]|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "begin": "%w\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\\\)|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "begin": "%w<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\>|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "begin": "%w{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\}|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "begin": "%w([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.section.array.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.section.array.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "comment": "Cant be named because its not neccesarily an escape.",
+          "match": "\\\\."
+        }
+      ]
+    },
+    {
+      "begin": "%[Qx]?\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_parens_i"
+        }
+      ]
+    },
+    {
+      "begin": "%[Qx]?\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_brackets_i"
+        }
+      ]
+    },
+    {
+      "begin": "%[Qx]?{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_curly_i"
+        }
+      ]
+    },
+    {
+      "begin": "%[Qx]?<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_ltgt_i"
+        }
+      ]
+    },
+    {
+      "begin": "%[Qx]([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "%([^\\w\\s=])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.interpolated.stk",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "%q\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\\\)|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "begin": "%q<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\>|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "begin": "%q\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\]|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "begin": "%q{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "match": "\\\\}|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "begin": "%q([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.quoted.other.stk",
+      "patterns": [
+        {
+          "comment": "Cant be named because its not neccesarily an escape.",
+          "match": "\\\\."
+        }
+      ]
+    },
+    {
+      "begin": "%s\\(",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.begin.stk"
+        }
+      },
+      "end": "\\)",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\\\)|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    {
+      "begin": "%s<",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.begin.stk"
+        }
+      },
+      "end": ">",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\>|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    {
+      "begin": "%s\\[",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.begin.stk"
+        }
+      },
+      "end": "]",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\]|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    {
+      "begin": "%s{",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.begin.stk"
+        }
+      },
+      "end": "}",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "match": "\\\\}|\\\\\\\\",
+          "name": "constant.character.escape.stk"
+        },
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    {
+      "begin": "%s([^\\w])",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.begin.stk"
+        }
+      },
+      "end": "\\1",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.symbol.end.stk"
+        }
+      },
+      "name": "constant.language.symbol.stk",
+      "patterns": [
+        {
+          "comment": "Cant be named because its not neccesarily an escape.",
+          "match": "\\\\."
+        }
+      ]
+    },
+    {
+      "captures": {
+        "1": {
+          "name": "punctuation.definition.constant.stk"
+        }
+      },
+      "comment": "symbols",
+      "match": "(?x)\n(?<!:)(:)\n(?>\n  [$a-zA-Z_]\\w*(?>[?!]|=(?![>=]))?\n  |\n  ===?|<=>|>[>=]?|<[<=]?|[%&`/\\|]|\\*\\*?|=?~|[-+]@?|\\[]=?\n  |\n  @@?[a-zA-Z_]\\w*\n)",
+      "name": "constant.language.symbol.stk"
+    },
+    {
+      "begin": "^=begin",
+      "captures": {
+        "0": {
+          "name": "punctuation.definition.comment.stk"
+        }
+      },
+      "comment": "multiline comments",
+      "end": "^=end",
+      "name": "comment.block.documentation.stk"
+    },
+    {
+      "include": "#yard"
+    },
+    {
+      "begin": "(^[ \\t]+)?(?=#)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.whitespace.comment.leading.stk"
+        }
+      },
+      "end": "(?!\\G)",
+      "patterns": [
+        {
+          "begin": "#",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.stk"
+            }
+          },
+          "end": "\\n",
+          "name": "comment.line.number-sign.stk"
+        }
+      ]
+    },
+    {
+      "comment": "\n\t\t\tmatches questionmark-letters.\n\n\t\t\texamples (1st alternation = hex):\n\t\t\t?\\x1     ?\\x61\n\n\t\t\texamples (2nd alternation = octal):\n\t\t\t?\\0      ?\\07     ?\\017\n\n\t\t\texamples (3rd alternation = escaped):\n\t\t\t?\\n      ?\\b\n\n\t\t\texamples (4th alternation = meta-ctrl):\n\t\t\t?\\C-a    ?\\M-a    ?\\C-\\M-\\C-\\M-a\n\n\t\t\texamples (4th alternation = normal):\n\t\t\t?a       ?A       ?0 \n\t\t\t?*       ?\"       ?( \n\t\t\t?.       ?#\n\t\t\t\n\t\t\t\n\t\t\tthe negative lookbehind prevents against matching\n\t\t\tp(42.tainted?)\n\t\t\t",
+      "match": "(?<!\\w)\\?(\\\\(x\\h{1,2}(?!\\h)\\b|0[0-7]{0,2}(?![0-7])\\b|[^x0MC])|(\\\\[MC]-)+\\w|[^\\s\\\\])",
+      "name": "constant.numeric.stk"
+    },
+    {
+      "begin": "^__END__\\n",
+      "captures": {
+        "0": {
+          "name": "string.unquoted.program-block.stk"
+        }
+      },
+      "comment": "__END__ marker",
+      "contentName": "text.plain",
+      "end": "(?=not)impossible",
+      "patterns": [
+        {
+          "begin": "(?=<?xml|<(?i:html\\b)|!DOCTYPE (?i:html\\b))",
+          "end": "(?=not)impossible",
+          "name": "text.html.embedded.stk",
+          "patterns": [
+            {
+              "include": "text.html.basic"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)HTML)\\b\\1))",
+      "comment": "Heredoc with embedded html",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.html",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)HTML)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "text.html",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "text.html.basic"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)XML)\\b\\1))",
+      "comment": "Heredoc with embedded xml",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.xml",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)XML)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "text.xml",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "text.xml"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)SQL)\\b\\1))",
+      "comment": "Heredoc with embedded sql",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.sql",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)SQL)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.sql",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.sql"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)GRAPHQL)\\b\\1))",
+      "comment": "Heredoc with embedded GraphQL",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.graphql",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)GRAPHQL)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.graphql",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.graphql"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)CSS)\\b\\1))",
+      "comment": "Heredoc with embedded css",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.css",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)CSS)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.css",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.css"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)CPP)\\b\\1))",
+      "comment": "Heredoc with embedded c++",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.cpp",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)CPP)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.cpp",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.cpp"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)C)\\b\\1))",
+      "comment": "Heredoc with embedded c",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.c",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)C)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.c",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.c"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)(?:JS|JAVASCRIPT))\\b\\1))",
+      "comment": "Heredoc with embedded javascript",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.js",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)(?:JS|JAVASCRIPT))\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.js",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.js"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)JQUERY)\\b\\1))",
+      "comment": "Heredoc with embedded jQuery javascript",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.js.jquery",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)JQUERY)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.js.jquery",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.js.jquery"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)(?:SH|SHELL))\\b\\1))",
+      "comment": "Heredoc with embedded shell",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.shell",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)(?:SH|SHELL))\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.shell",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.shell"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)LUA)\\b\\1))",
+      "comment": "Heredoc with embedded lua",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.lua",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)LUA)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.lua",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.lua"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)stk)\\b\\1))",
+      "comment": "Heredoc with embedded stk",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.stk",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)stk)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "source.stk",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "source.stk"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?=(?><<[-~]([\"'`]?)((?:[_\\w]+_|)SLIM)\\b\\1))",
+      "comment": "Heredoc with embedded slim",
+      "end": "(?!\\G)",
+      "name": "meta.embedded.block.slim",
+      "patterns": [
+        {
+          "begin": "(?><<[-~]([\"'`]?)((?:[_\\w]+_|)SLIM)\\b\\1)",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.begin.stk"
+            }
+          },
+          "contentName": "text.slim",
+          "end": "^\\s*\\2$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.string.end.stk"
+            }
+          },
+          "name": "string.unquoted.heredoc.stk",
+          "patterns": [
+            {
+              "include": "#heredoc"
+            },
+            {
+              "include": "#interpolated_stk"
+            },
+            {
+              "include": "text.slim"
+            },
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "begin": "(?>=\\s*<<([\"'`]?)(\\w+)\\1)",
+      "beginCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.begin.stk"
+        }
+      },
+      "end": "^\\2$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.unquoted.heredoc.stk",
+      "patterns": [
+        {
+          "include": "#heredoc"
+        },
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "(?>((<<[-~]([\"'`]?)(\\w+)\\3,\\s?)*<<[-~]([\"'`]?)(\\w+)\\5))(.*)",
+      "beginCaptures": {
+        "1": {
+          "name": "punctuation.definition.string.begin.stk"
+        },
+        "7": {
+          "patterns": [
+            {
+              "include": "source.stk"
+            }
+          ]
+        }
+      },
+      "comment": "heredoc with multiple inputs and indented terminator",
+      "end": "^\\s*\\6$",
+      "endCaptures": {
+        "0": {
+          "name": "punctuation.definition.string.end.stk"
+        }
+      },
+      "name": "string.unquoted.heredoc.stk",
+      "patterns": [
+        {
+          "include": "#heredoc"
+        },
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        }
+      ]
+    },
+    {
+      "begin": "(?<={|{\\s|[^A-Za-z0-9_]do|^do|[^A-Za-z0-9_]do\\s|^do\\s)(\\|)",
+      "name": "meta.block.parameters.stk",
+      "captures": {
+        "1": {
+          "name": "punctuation.separator.variable.stk"
+        }
+      },
+      "end": "(?<!\\|)(\\|)(?!\\|)",
+      "patterns": [
+        {
+          "begin": "(?![\\s,|(])",
+          "end": "(?=,|\\|\\s*)",
+          "patterns": [
+            {
+              "match": "\\G([&*]?)([a-zA-Z][\\w_]*)|(_[\\w_]*)",
+              "captures": {
+                "1": {
+                  "name": "storage.type.variable.stk"
+                },
+                "2": {
+                  "name": "variable.other.block.stk"
+                },
+                "3": {
+                  "name": "variable.other.block.unused.stk"
+                },
+                "4": {
+                  "name": "variable.other.constant.stk"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "match": ",",
+          "name": "punctuation.separator.variable.stk"
+        }
+      ]
+    },
+    {
+      "match": "=>",
+      "name": "punctuation.separator.key-value"
+    },
+    {
+      "match": "->",
+      "name": "support.function.kernel.stk"
+    },
+    {
+      "match": "<<=|%=|&{1,2}=|\\*=|\\*\\*=|\\+=|-=|\\^=|\\|{1,2}=|<<",
+      "name": "keyword.operator.assignment.augmented.stk"
+    },
+    {
+      "match": "<=>|<(?!<|=)|>(?!<|=|>)|<=|>=|===|==|=~|!=|!~|(?<=[ \\t])\\?",
+      "name": "keyword.operator.comparison.stk"
+    },
+    {
+      "match": "(?<=[\\040\\t]):(?=[\\040\\t])",
+      "name": "keyword.operator.ternary-ifstk"
+    },
+    {
+      "match": "(?<!\\.)\\b(and|not|or)\\b(?![?!])",
+      "name": "keyword.operator.logical.stk"
+    },
+    {
+      "match": "(?<=^|[ \\t!])!|&&|\\|\\||\\^",
+      "name": "keyword.operator.logical.stk"
+    },
+    {
+      "match": "(?<=[^\\.\\s])\\.{2,3}(?=[^\\.\\s])",
+      "name": "keyword.operator.range.stk"
+    },
+    {
+      "comment": "Safe navigation operator",
+      "match": "(&\\.)\\s*(?![A-Z])",
+      "captures": {
+        "1": {
+          "name": "keyword.operator.logical.stk"
+        }
+      }
+    },
+    {
+      "match": "(%|&|\\*\\*|\\*|\\+|-|/)",
+      "name": "keyword.operator.arithmetic.stk"
+    },
+    {
+      "match": "=",
+      "name": "keyword.operator.assignment.stk"
+    },
+    {
+      "match": "\\||~|>>",
+      "name": "keyword.operator.other.stk"
+    },
+    {
+      "match": ";",
+      "name": "punctuation.separator.statement.stk"
+    },
+    {
+      "match": ",",
+      "name": "punctuation.separator.object.stk"
+    },
+    {
+      "comment": "Mark as namespace separator if double colons followed by capital letter",
+      "match": "(::)\\s*(?=[A-Z])",
+      "captures": {
+        "1": {
+          "name": "punctuation.separator.namespace.stk"
+        }
+      }
+    },
+    {
+      "comment": "Mark as method separator if double colons not followed by capital letter",
+      "match": "(\\.|::)\\s*(?![A-Z])",
+      "captures": {
+        "1": {
+          "name": "punctuation.separator.method.stk"
+        }
+      }
+    },
+    {
+      "comment": "Must come after method and constant separators to prefer double colons",
+      "match": ":",
+      "name": "punctuation.separator.other.stk"
+    },
+    {
+      "match": "{",
+      "name": "punctuation.section.scope.begin.stk"
+    },
+    {
+      "match": "}",
+      "name": "punctuation.section.scope.end.stk"
+    },
+    {
+      "match": "\\[",
+      "name": "punctuation.section.array.begin.stk"
+    },
+    {
+      "match": "]",
+      "name": "punctuation.section.array.end.stk"
+    },
+    {
+      "match": "\\(|\\)",
+      "name": "punctuation.section.function.stk"
+    },
+    {
+      "name": "meta.function-call.stk",
+      "begin": "(?<=[^\\.]\\.|::)(?=[a-zA-Z][a-zA-Z0-9_!?]*[^a-zA-Z0-9_!?])",
+      "end": "(?<=[a-zA-Z0-9_!?])(?=[^a-zA-Z0-9_!?])",
+      "patterns": [
+        {
+          "name": "entity.name.function.stk",
+          "match": "([a-zA-Z][a-zA-Z0-9_!?]*)(?=[^a-zA-Z0-9_!?])"
+        }
+      ]
+    },
+    {
+      "begin": "(?=[a-zA-Z0-9_!?]+\\()",
+      "end": "(?<=\\))",
+      "name": "meta.function-call.stk",
+      "patterns": [
+        {
+          "match": "([a-zA-Z0-9_!?]+)((?=\\()|([!?]))",
+          "name": "entity.name.function.stk"
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    {
+      "comment": "This is kindof experimental. There really is no way to perfectly match all regular variables, but you can pretty well assume that any normal word in certain curcumstances that haven't already been scoped as something else are probably variables, and the advantages beat the potential errors",
+      "match": "((?<=\\W)\\b|^)\\w+[?!]\\B|\\w+\\b(?=\\s*([\\]\\)\\}\\=\\+\\-\\*\\/\\^\\$\\,\\.\\&]|<\\s|<<[\\s|\\.])?)",
+      "name": "variable.other.stk"
     }
-  },
-  "scopeName": "source.stk"
+  ],
+  "repository": {
+    "escaped_char": {
+      "match": "\\\\(?:[0-7]{1,3}|x[\\da-fA-F]{1,2}|.)",
+      "name": "constant.character.escape.stk"
+    },
+    "heredoc": {
+      "begin": "^<<[-~]?\\w+",
+      "end": "$",
+      "patterns": [
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "interpolated_stk": {
+      "patterns": [
+        {
+          "begin": "#{",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.begin.stk"
+            }
+          },
+          "contentName": "source.stk",
+          "end": "}",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.section.embedded.end.stk"
+            }
+          },
+          "name": "meta.embedded.line.stk",
+          "patterns": [
+            {
+              "include": "#nest_curly_and_self"
+            },
+            {
+              "include": "$self"
+            }
+          ]
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.stk"
+            }
+          },
+          "match": "(#@)[a-zA-Z_]\\w*",
+          "name": "variable.other.readwrite.instance.stk"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.stk"
+            }
+          },
+          "match": "(#@@)[a-zA-Z_]\\w*",
+          "name": "variable.other.readwrite.class.stk"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.variable.stk"
+            }
+          },
+          "match": "(#\\$)[a-zA-Z_]\\w*",
+          "name": "variable.other.readwrite.global.stk"
+        }
+      ]
+    },
+    "nest_brackets": {
+      "begin": "\\[",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "]",
+      "patterns": [
+        {
+          "include": "#nest_brackets"
+        }
+      ]
+    },
+    "nest_brackets_i": {
+      "begin": "\\[",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "]",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_brackets_i"
+        }
+      ]
+    },
+    "nest_brackets_r": {
+      "begin": "\\[",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "]",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_brackets_r"
+        }
+      ]
+    },
+    "nest_curly": {
+      "begin": "{",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "}",
+      "patterns": [
+        {
+          "include": "#nest_curly"
+        }
+      ]
+    },
+    "nest_curly_and_self": {
+      "patterns": [
+        {
+          "begin": "{",
+          "captures": {
+            "0": {
+              "name": "punctuation.section.scope.stk"
+            }
+          },
+          "end": "}",
+          "patterns": [
+            {
+              "include": "#nest_curly_and_self"
+            }
+          ]
+        },
+        {
+          "include": "$self"
+        }
+      ]
+    },
+    "nest_curly_i": {
+      "begin": "{",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "}",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_curly_i"
+        }
+      ]
+    },
+    "nest_curly_r": {
+      "begin": "{",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "}",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_curly_r"
+        }
+      ]
+    },
+    "nest_ltgt": {
+      "begin": "<",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": ">",
+      "patterns": [
+        {
+          "include": "#nest_ltgt"
+        }
+      ]
+    },
+    "nest_ltgt_i": {
+      "begin": "<",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": ">",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_ltgt_i"
+        }
+      ]
+    },
+    "nest_ltgt_r": {
+      "begin": "<",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": ">",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_ltgt_r"
+        }
+      ]
+    },
+    "nest_parens": {
+      "begin": "\\(",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "#nest_parens"
+        }
+      ]
+    },
+    "nest_parens_i": {
+      "begin": "\\(",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "include": "#nest_parens_i"
+        }
+      ]
+    },
+    "nest_parens_r": {
+      "begin": "\\(",
+      "captures": {
+        "0": {
+          "name": "punctuation.section.scope.stk"
+        }
+      },
+      "end": "\\)",
+      "patterns": [
+        {
+          "include": "#regex_sub"
+        },
+        {
+          "include": "#nest_parens_r"
+        }
+      ]
+    },
+    "regex_sub": {
+      "patterns": [
+        {
+          "include": "#interpolated_stk"
+        },
+        {
+          "include": "#escaped_char"
+        },
+        {
+          "captures": {
+            "1": {
+              "name": "punctuation.definition.arbitrary-repetition.stk"
+            },
+            "3": {
+              "name": "punctuation.definition.arbitrary-repetition.stk"
+            }
+          },
+          "match": "({)\\d+(,\\d+)?(})",
+          "name": "string.regexp.arbitrary-repetition.stk"
+        },
+        {
+          "begin": "\\[(?:\\^?])?",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.character-class.stk"
+            }
+          },
+          "end": "]",
+          "name": "string.regexp.character-class.stk",
+          "patterns": [
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        },
+        {
+          "begin": "\\(\\?#",
+          "beginCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.begin.stk"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.end.stk"
+            }
+          },
+          "name": "comment.line.number-sign.stk",
+          "patterns": [
+            {
+              "include": "#escaped_char"
+            }
+          ]
+        },
+        {
+          "begin": "\\(",
+          "captures": {
+            "0": {
+              "name": "punctuation.definition.group.stk"
+            }
+          },
+          "end": "\\)",
+          "name": "string.regexp.group.stk",
+          "patterns": [
+            {
+              "include": "#regex_sub"
+            }
+          ]
+        },
+        {
+          "begin": "(?<=^|\\s)(#)\\s(?=[[a-zA-Z0-9,. \\t?!-][^\\x{00}-\\x{7F}]]*$)",
+          "beginCaptures": {
+            "1": {
+              "name": "punctuation.definition.comment.stk"
+            }
+          },
+          "comment": "We are restrictive in what we allow to go after the comment character to avoid false positives, since the availability of comments depend on regexp flags.",
+          "end": "$\\n?",
+          "endCaptures": {
+            "0": {
+              "name": "punctuation.definition.comment.stk"
+            }
+          },
+          "name": "comment.line.number-sign.stk"
+        }
+      ]
+    },
+    "yard": {
+      "name": "comment.line.yard.stk",
+      "patterns": [
+        {
+          "include": "#yard_comment"
+        },
+        {
+          "include": "#yard_name_types"
+        },
+        {
+          "include": "#yard_param_types"
+        },
+        {
+          "include": "#yard_tag"
+        },
+        {
+          "include": "#yard_types"
+        },
+        {
+          "include": "#yard_directive"
+        }
+      ]
+    },
+    "yard_comment": {
+      "comment": "For YARD tags that follow the tag-comment pattern",
+      "begin": "^(\\s*)(#)(\\s*)(@)(abstract|api|author|deprecated|example|macro|note|overload|since|todo|version)(?=\\s|$)",
+      "beginCaptures": {
+        "1": {
+          "name": "comment.line.yard.stk"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.stk"
+        },
+        "3": {
+          "name": "comment.line.yard.stk"
+        },
+        "4": {
+          "name": "comment.line.keyword.punctuation.yard.stk"
+        },
+        "5": {
+          "name": "comment.line.keyword.yard.stk"
+        }
+      },
+      "end": "^(?!\\s*#\\3\\s{2,})",
+      "contentName": "comment.line.string.yard.stk",
+      "name": "comment.line.number-sign.stk",
+      "patterns": [
+        {
+          "include": "#yard"
+        },
+        {
+          "include": "#yard_continuation"
+        }
+      ]
+    },
+    "yard_name_types": {
+      "comment": "For YARD tags that follow the tag-name-types-comment pattern",
+      "begin": "^(\\s*)(#)(\\s*)(@)(attr|attr_reader|attr_writer|see|yieldparam)(?=\\s)(\\s+([a-z_][a-zA-Z_]*))?(\\s+((\\[).+(])))?",
+      "beginCaptures": {
+        "1": {
+          "name": "comment.line.yard.stk"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.stk"
+        },
+        "3": {
+          "name": "comment.line.yard.stk"
+        },
+        "4": {
+          "name": "comment.line.keyword.punctuation.yard.stk"
+        },
+        "5": {
+          "name": "comment.line.keyword.yard.stk"
+        },
+        "6": {
+          "name": "comment.line.yard.stk"
+        },
+        "7": {
+          "name": "comment.line.parameter.yard.stk"
+        },
+        "8": {
+          "name": "comment.line.yard.stk"
+        },
+        "9": {
+          "name": "comment.line.type.yard.stk"
+        },
+        "10": {
+          "name": "comment.line.punctuation.yard.stk"
+        },
+        "11": {
+          "name": "comment.line.punctuation.yard.stk"
+        }
+      },
+      "end": "^(?!\\s*#\\3\\s{2,})",
+      "contentName": "comment.line.string.yard.stk",
+      "name": "comment.line.number-sign.stk",
+      "patterns": [
+        {
+          "include": "#yard"
+        },
+        {
+          "include": "#yard_continuation"
+        }
+      ]
+    },
+    "yard_param_types": {
+      "comment": "For YARD tags that follow the tag-param-types-comment pattern",
+      "begin": "^(\\s*)(#)(\\s*)(@)(option|param)(?=\\s)(\\s+([a-z_][a-zA-Z_]*:?))?(\\s+((\\[).+(])))?(\\s+(:[a-z_][a-zA-Z_]*))?",
+      "beginCaptures": {
+        "1": {
+          "name": "comment.line.yard.stk"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.stk"
+        },
+        "3": {
+          "name": "comment.line.yard.stk"
+        },
+        "4": {
+          "name": "comment.line.keyword.punctuation.yard.stk"
+        },
+        "5": {
+          "name": "comment.line.keyword.yard.stk"
+        },
+        "6": {
+          "name": "comment.line.yard.stk"
+        },
+        "7": {
+          "name": "comment.line.parameter.yard.stk"
+        },
+        "8": {
+          "name": "comment.line.yard.stk"
+        },
+        "9": {
+          "name": "comment.line.type.yard.stk"
+        },
+        "10": {
+          "name": "comment.line.punctuation.yard.stk"
+        },
+        "11": {
+          "name": "comment.line.punctuation.yard.stk"
+        },
+        "12": {
+          "name": "comment.line.punctuation.yard.stk"
+        },
+        "13": {
+          "name": "comment.line.keyword.yard.stk"
+        },
+        "14": {
+          "name": "comment.line.punctuation.yard.stk"
+        }
+      },
+      "end": "^(?!\\s*#\\3\\s{2,})",
+      "contentName": "comment.line.string.yard.stk",
+      "name": "comment.line.number-sign.stk",
+      "patterns": [
+        {
+          "include": "#yard"
+        },
+        {
+          "include": "#yard_continuation"
+        }
+      ]
+    },
+    "yard_tag": {
+      "comment": "For YARD tags that are just the tag",
+      "match": "^(\\s*)(#)(\\s*)(@)(private)$",
+      "captures": {
+        "1": {
+          "name": "comment.line.yard.stk"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.stk"
+        },
+        "3": {
+          "name": "comment.line.yard.stk"
+        },
+        "4": {
+          "name": "comment.line.keyword.punctuation.yard.stk"
+        },
+        "5": {
+          "name": "comment.line.keyword.yard.stk"
+        }
+      },
+      "name": "comment.line.number-sign.stk"
+    },
+    "yard_types": {
+      "comment": "For YARD tags that follow the tag-types-comment pattern",
+      "begin": "^(\\s*)(#)(\\s*)(@)(raise|return|yield(?:return)?)(?=\\s)(\\s+((\\[).+(])))?",
+      "beginCaptures": {
+        "1": {
+          "name": "comment.line.yard.stk"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.stk"
+        },
+        "3": {
+          "name": "comment.line.yard.stk"
+        },
+        "4": {
+          "name": "comment.line.keyword.punctuation.yard.stk"
+        },
+        "5": {
+          "name": "comment.line.keyword.yard.stk"
+        },
+        "6": {
+          "name": "comment.line.yard.stk"
+        },
+        "7": {
+          "name": "comment.line.type.yard.stk"
+        },
+        "8": {
+          "name": "comment.line.punctuation.yard.stk"
+        },
+        "9": {
+          "name": "comment.line.punctuation.yard.stk"
+        }
+      },
+      "end": "^(?!\\s*#\\3\\s{2,})",
+      "contentName": "comment.line.string.yard.stk",
+      "name": "comment.line.number-sign.stk",
+      "patterns": [
+        {
+          "include": "#yard"
+        },
+        {
+          "include": "#yard_continuation"
+        }
+      ]
+    },
+    "yard_directive": {
+      "comment": "For YARD directives",
+      "begin": "^(\\s*)(#)(\\s*)(@!)(attribute|endgroup|group|macro|method|parse|scope|visibility)(\\s+((\\[).+(])))?(?=\\s)",
+      "beginCaptures": {
+        "1": {
+          "name": "comment.line.yard.stk"
+        },
+        "2": {
+          "name": "punctuation.definition.comment.stk"
+        },
+        "3": {
+          "name": "comment.line.yard.stk"
+        },
+        "4": {
+          "name": "comment.line.keyword.punctuation.yard.stk"
+        },
+        "5": {
+          "name": "comment.line.keyword.yard.stk"
+        },
+        "6": {
+          "name": "comment.line.yard.stk"
+        },
+        "7": {
+          "name": "comment.line.type.yard.stk"
+        },
+        "8": {
+          "name": "comment.line.punctuation.yard.stk"
+        },
+        "9": {
+          "name": "comment.line.punctuation.yard.stk"
+        }
+      },
+      "end": "^(?!\\s*#\\3\\s{2,})",
+      "contentName": "comment.line.string.yard.stk",
+      "name": "comment.line.number-sign.stk",
+      "patterns": [
+        {
+          "include": "#yard"
+        },
+        {
+          "include": "#yard_continuation"
+        }
+      ]
+    },
+    "yard_continuation": {
+      "match": "^\\s*#",
+      "name": "punctuation.definition.comment.stk"
+    }
+  }
 }
