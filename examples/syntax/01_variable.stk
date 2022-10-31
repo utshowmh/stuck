@@ -1,6 +1,6 @@
 # Working with Variables
 
-var 400 @number        # declares a variable called number (it's like number = 400). you can also declare it like `400 @number`
+var 400 @number          # declares a variable called number (it's like number = 400). you can also declare it like `400 @number`
 number println           # prints value of number (it's like println(number))
-number 20 + @number    # mutates number (it's like number = number + 20)
+number 20 + @number      # mutates number (it's like number = number + 20)
 number println           # prints updated number
