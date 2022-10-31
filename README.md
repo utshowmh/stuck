@@ -4,7 +4,7 @@
 
 ## About
 
-Stuck is an interpreted [stack based programing language](https://en.wikipedia.org/wiki/Stack-oriented_programming) written in [Rust](https://www.rust-lang.org).
+Stuck is an interpreter [stack based programing language](https://en.wikipedia.org/wiki/Stack-oriented_programming) written in [Rust](https://www.rust-lang.org).
 
 </br>
 
@@ -22,7 +22,7 @@ This is a toy language I'm devoloping in order to learn how compilers, interpret
 
 ## Inspiration
 
-The implementation was initially inspired by Alexey Kutepov's [Porth](https://gitlab.com/tsoding/porth) and the syntax are inspired from [Ruby](https://www.ruby-lang.org/en/).
+The implementation was initially inspired by Alexey Kutepov's [Porth](https://gitlab.com/tsoding/porth) and the syntax was inspired from [Ruby](https://www.ruby-lang.org/en/).
 
 </br>
 

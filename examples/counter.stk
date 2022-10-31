@@ -1,9 +1,9 @@
 # A Counter Program
 
-var 0 @count            # counter variable
-var 100 @limit          # limit to count to
-
+var 0 @count                # counter variable
+var 100 @limit              # limit to count to
+    
 while count limit < do
-    count 1 + @count    # increaments counter variable
-    count println       # prints counter variable
+    count 1 + @count        # increaments counter variable
+    count println           # prints counter variable
 end 

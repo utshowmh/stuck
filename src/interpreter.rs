@@ -1,4 +1,4 @@
-use std::{collections::HashMap, fs::read_to_string, process::exit};
+use std::{collections::HashMap, process::exit};
 
 use crate::{
     object::{Number, Object},
@@ -23,13 +23,8 @@ impl Interpreter {
         }
     }
 
-    pub fn run(&mut self, source_path: &str) {
-        let source = read_to_string(source_path).unwrap_or_else(|err| {
-            eprintln!("ERROR: {:#?}", err);
-            exit(1);
-        });
-
-        let mut tokenizer = Tokenizer::new(&source);
+    pub fn run(&mut self, source: &str) {
+        let mut tokenizer = Tokenizer::new(source);
         self.program = tokenizer.scan_tokens().to_vec();
 
         self.interpret();

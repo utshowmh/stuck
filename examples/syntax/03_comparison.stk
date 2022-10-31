@@ -3,6 +3,6 @@
 var 420 @x
 var 69 @y
 
-x y = println      # checks if x is equal to y (it's like x == y)
-x y > println      # checks if x is greater than y (it's like x > y)
-x y < println      # checks if x is less than y (it's like x < y)
+x y = println       # checks if x is equal to y (it's like x == y)
+x y > println       # checks if x is greater than y (it's like x > y)
+x y < println       # checks if x is less than y (it's like x < y)

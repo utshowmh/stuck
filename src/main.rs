@@ -3,7 +3,7 @@ mod object;
 mod operation;
 mod tokenizer;
 
-use std::{env::args, process::exit};
+use std::{env::args, fs::read_to_string, process::exit};
 
 use interpreter::Interpreter;
 
@@ -11,6 +11,25 @@ fn main() {
     let args: Vec<String> = args().collect();
 
     match args.len() {
+        // 1 => loop {
+        //     let mut source = String::new();
+        //     print!("stuck :> ");
+        //     stdout().flush().unwrap_or_else(|err| {
+        //         println!("Error: {:#?}", err);
+        //         exit(1);
+        //     });
+        //     stdin().read_line(&mut source).unwrap_or_else(|err| {
+        //         println!("Error: {:#?}", err);
+        //         exit(1);
+        //     });
+        //     let source = source.trim();
+        //     let mut interpreter = Interpreter::new();
+        //     interpreter.run(source);
+        //     stdout().flush().unwrap_or_else(|err| {
+        //         println!("Error: {:#?}", err);
+        //         exit(1);
+        //     });
+        // },
         2 => {
             match args[1].as_str() {
                 "help" => {
@@ -18,25 +37,16 @@ fn main() {
                 }
                 source_path => {
                     let mut interpreter = Interpreter::new();
-                    interpreter.run(source_path);
+                    let source = read_to_string(source_path).unwrap_or_else(|err| {
+                        eprintln!("Error: {:#?}", err);
+                        exit(1);
+                    });
+                    interpreter.run(&source);
                 }
             };
         }
-        3 => {
-            let source_path = &args[1];
-            let flag = &args[2];
-            match flag.as_str() {
-                "i" => {
-                    let mut interpreter = Interpreter::new();
-                    interpreter.run(source_path);
-                }
-                unknown => {
-                    help(Some(&format!("Unknown flag `{}`", unknown)));
-                }
-            }
-        }
         _ => {
-            help(Some("No subcommand provided"));
+            help(Some("invalid subcommands"));
         }
     }
 }
@@ -48,12 +58,11 @@ program: stuck
 usage: stuck [subcommands]
 subcommands:
         [source_file]       :   interprets the file.
-        [source_file] i     :   interprets the file.
         help                :   prints this page./
     "
     );
     if let Some(message) = message {
-        eprintln!("ERROR: {}.", message);
+        eprintln!("Error: {}.", message);
         exit(1);
     }
     exit(0);
