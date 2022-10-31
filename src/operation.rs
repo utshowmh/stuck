@@ -4,6 +4,7 @@ use crate::object::Object;
 pub enum OperationType {
     Identifier,
     Number,
+    String,
 
     Assignment,
     Variable,

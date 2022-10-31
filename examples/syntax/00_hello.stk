@@ -1,5 +1,5 @@
 # comments starts with a `#` and ends with `newline`. there's no multiline comment.
 
-420 print   # prints operand to stdio (it's like print(420))
+"hello, world" print   # prints operand to stdio (it's like print(420))
 
 # every program have to end with a `newline`

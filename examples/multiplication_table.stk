@@ -5,9 +5,12 @@ var 0 @i
 
 while i 10 < do
     i 1 + @i
+    i print
+    "##############" print
     while j 10 < do
         j 1 + @j
         i j * print
     end
+    "--------------" print
     0 @j
 end 

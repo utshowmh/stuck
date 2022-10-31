@@ -1,0 +1,5 @@
+# Working with variables
+
+var "utsho" @name
+
+name print

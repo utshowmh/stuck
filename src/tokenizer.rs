@@ -125,6 +125,11 @@ impl Tokenizer {
                     ));
                 }
 
+                '"' => {
+                    self.advance();
+                    self.make_string();
+                }
+
                 invalid_token => {
                     if invalid_token.is_digit(10) {
                         self.make_number();
@@ -299,7 +304,7 @@ impl Tokenizer {
     fn make_identifier(&mut self) {
         let mut identifier = String::new();
         while let Some(current_charecter) = self.current_charecter {
-            if current_charecter.is_alphanumeric() {
+            if current_charecter.is_alphanumeric() || current_charecter == '_' {
                 identifier.push(current_charecter);
                 self.advance();
             } else {
@@ -318,6 +323,26 @@ impl Tokenizer {
                 }
             }
         }
+    }
+
+    fn make_string(&mut self) {
+        let mut string = String::new();
+        while let Some(current_charecter) = self.current_charecter {
+            string.push(current_charecter);
+            self.advance();
+            if current_charecter == '"' {
+                let string = string.strip_suffix("\"").unwrap();
+                self.operations.push(Operation::new(
+                    OperationType::String,
+                    Some(Object::String(string.to_string())),
+                    self.line_number,
+                ));
+                return;
+            } else if current_charecter == '\n' {
+                break;
+            }
+        }
+        self.error("untermated string");
     }
 
     fn init_keywords(&mut self) {

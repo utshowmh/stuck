@@ -4,5 +4,6 @@ pub type Number = f64;
 pub enum Object {
     Identifier(String),
     Number(Number),
+    String(String),
     Reference(usize),
 }
