@@ -14,4 +14,4 @@ while i n < do
     i 1 + @i
 end
 
-fib print 
+fib println

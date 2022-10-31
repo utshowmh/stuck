@@ -4,9 +4,9 @@ var 100 @x
 var 50 @y
 
 if x y < then      # `then` takes the operand and if it's 0 (true) then jumps to next `else` or `end` otherwise executes until found any `else` or `end`
-    69 print
+    69 println
 else x y > then
-    420 print
+    420 println
 else
-    96 print
+    96 println
 end                # `end` ends the `if` block

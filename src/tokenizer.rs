@@ -350,6 +350,8 @@ impl Tokenizer {
             .insert("var".to_string(), OperationType::Variable);
         self.keywords
             .insert("print".to_string(), OperationType::Print);
+        self.keywords
+            .insert("println".to_string(), OperationType::Println);
         self.keywords.insert("if".to_string(), OperationType::If);
         self.keywords
             .insert("then".to_string(), OperationType::Then);

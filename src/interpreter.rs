@@ -443,6 +443,29 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     match a {
+                        Object::String(string) => print!("{}", string),
+                        Object::Number(number) => print!("{}", number),
+                        _ => {
+                            self.invalid_type(&format!(
+                                "`print` can use with only number or string in line {}",
+                                operation.line
+                            ));
+                        }
+                    }
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::Println => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`print` operation requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    match a {
                         Object::String(string) => println!("{}", string),
                         Object::Number(number) => println!("{}", number),
                         _ => {

@@ -26,6 +26,7 @@ pub enum OperationType {
     End,
 
     Print,
+    Println,
 }
 
 #[derive(Debug, Clone)]
