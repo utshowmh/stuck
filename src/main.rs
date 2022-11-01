@@ -11,25 +11,6 @@ fn main() {
     let args: Vec<String> = args().collect();
 
     match args.len() {
-        // 1 => loop {
-        //     let mut source = String::new();
-        //     print!("stuck :> ");
-        //     stdout().flush().unwrap_or_else(|err| {
-        //         println!("Error: {:#?}", err);
-        //         exit(1);
-        //     });
-        //     stdin().read_line(&mut source).unwrap_or_else(|err| {
-        //         println!("Error: {:#?}", err);
-        //         exit(1);
-        //     });
-        //     let source = source.trim();
-        //     let mut interpreter = Interpreter::new();
-        //     interpreter.run(source);
-        //     stdout().flush().unwrap_or_else(|err| {
-        //         println!("Error: {:#?}", err);
-        //         exit(1);
-        //     });
-        // },
         2 => {
             match args[1].as_str() {
                 "help" => {
@@ -39,7 +20,7 @@ fn main() {
                     let mut interpreter = Interpreter::new();
                     let source = read_to_string(source_path).unwrap_or_else(|err| {
                         eprintln!("Error: {:#?}", err);
-                        exit(1);
+                        exit(2);
                     });
                     interpreter.run(&source);
                 }
