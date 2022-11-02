@@ -1,4 +1,4 @@
-use std::{collections::HashMap, process::exit};
+use std::{collections::HashMap, process::exit, io::stdin};
 
 use crate::{
     object::{Number, Object},
@@ -426,6 +426,22 @@ impl Interpreter {
                     } else {
                         instruction_pointer += 1;
                     }
+                }
+
+                OperationType::Input => {
+                    let mut object = String::new();
+                    stdin().read_line(&mut object).unwrap_or_else(|err| {
+                        eprintln!("Error: {:#?}", err);
+                        exit(1);
+                    });
+                    let object = object.trim();
+                    if let Ok(number) = object.parse() {
+                        self.stack.push(Object::Number(number));
+                    } else {
+                        self.stack.push(Object::String(object.to_string()));
+                    }
+
+                    instruction_pointer += 1;
                 }
 
                 OperationType::Print => {

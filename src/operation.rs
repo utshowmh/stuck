@@ -25,6 +25,7 @@ pub enum OperationType {
     Do,
     End,
 
+    Input,
     Print,
     Println,
 }

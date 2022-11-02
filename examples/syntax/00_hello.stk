@@ -1,5 +1,5 @@
 # comments starts with a `#` and ends with `newline`. there's no multiline comment.
 
-"hello, world" println      # prints operand to stdio (it's like println(420))
-
-# every program have to end with a `newline`
+var input @name
+"hello, " print      # prints operand to stdio (it's like print(name))
+name println

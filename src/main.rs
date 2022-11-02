@@ -15,9 +15,15 @@ fn main() {
             let mut interpreter = Interpreter::new();
             loop {
                 print!("stuck :> ");
-                stdout().flush().unwrap();
+                stdout().flush().unwrap_or_else(|err| {
+                    eprintln!("Error: {:#?}", err);
+                    exit(1);
+                });
                 let mut source = String::new();
-                stdin().read_line(&mut source).unwrap();
+                stdin().read_line(&mut source).unwrap_or_else(|err| {
+                    eprintln!("Error: {:#?}", err);
+                    exit(1);
+                });
                 interpreter.run(&source);
             }
         }
