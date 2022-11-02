@@ -227,6 +227,31 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Modulus => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`/` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    match (a, b) {
+                        (Object::Number(x), Object::Number(y)) => {
+                            self.stack.push(Object::Number(y % x));
+                        }
+                        _ => {
+                            self.invalid_type(&format!(
+                                "`/` is only usable with number in line {}",
+                                operation.line
+                            ));
+                        }
+                    }
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::Equal => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(

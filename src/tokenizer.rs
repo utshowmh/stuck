@@ -89,6 +89,15 @@ impl Tokenizer {
                     ));
                 }
 
+                '%' => {
+                    self.advance();
+                    self.operations.push(Operation::new(
+                        OperationType::Modulus, 
+                        None, 
+                        self.line_number,
+                    ));
+                }
+
                 '=' => {
                     self.advance();
                     self.operations.push(Operation::new(

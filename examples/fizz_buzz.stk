@@ -1,0 +1,19 @@
+# The FizzBuzz Problem
+
+var 0 @i
+
+while i 100 < do
+    i 1 + @i
+
+    i print " -> " print
+    i 3 % @fizz
+    i 5 % @buzz
+
+    if fizz 0 = then
+        "fizz" println
+    else buzz 0 = then
+        "buzz" println
+    else
+        "" println
+    end
+end

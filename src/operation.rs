@@ -13,6 +13,7 @@ pub enum OperationType {
     Minus,
     Multiplication,
     Division,
+    Modulus,
 
     Equal,
     Greater,
