@@ -1,4 +1,4 @@
-# stk README
+# Stuck
 
 This is the README for your extension "stk". After writing up a brief description, we recommend including the following sections.
 
