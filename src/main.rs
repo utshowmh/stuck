@@ -3,7 +3,7 @@ mod object;
 mod operation;
 mod tokenizer;
 
-use std::{env::args, fs::read_to_string, process::exit};
+use std::{env::args, fs::read_to_string, process::exit, io::{stdin, stdout, Write}};
 
 use interpreter::Interpreter;
 
@@ -11,6 +11,17 @@ fn main() {
     let args: Vec<String> = args().collect();
 
     match args.len() {
+        1 => {
+            let mut interpreter = Interpreter::new();
+            loop {
+                print!("stuck :> ");
+                stdout().flush().unwrap();
+                let mut source = String::new();
+                stdin().read_line(&mut source).unwrap();
+                interpreter.run(&source);
+            }
+        }
+
         2 => {
             match args[1].as_str() {
                 "help" => {
@@ -18,10 +29,11 @@ fn main() {
                 }
                 source_path => {
                     let mut interpreter = Interpreter::new();
-                    let source = read_to_string(source_path).unwrap_or_else(|err| {
+                    let mut source = read_to_string(source_path).unwrap_or_else(|err| {
                         eprintln!("Error: {:#?}", err);
                         exit(2);
                     });
+                    source.push('\n');
                     interpreter.run(&source);
                 }
             };
