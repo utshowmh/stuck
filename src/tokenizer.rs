@@ -92,8 +92,8 @@ impl Tokenizer {
                 '%' => {
                     self.advance();
                     self.operations.push(Operation::new(
-                        OperationType::Modulus, 
-                        None, 
+                        OperationType::Modulus,
+                        None,
                         self.line_number,
                     ));
                 }
@@ -216,6 +216,8 @@ impl Tokenizer {
                                         OperationType::If => {
                                             crossreferened_operations[opening_block].operand =
                                                 Some(Object::Reference(operation_index + 1));
+                                            crossreferened_operations[operation_index].operand =
+                                                Some(Object::Reference(operation_index + 1));
                                         }
 
                                         invalid_block => self.error(&format!(
@@ -230,6 +232,8 @@ impl Tokenizer {
 
                             OperationType::Else => {
                                 crossreferened_operations[opening_block].operand =
+                                    Some(Object::Reference(operation_index + 1));
+                                crossreferened_operations[operation_index].operand =
                                     Some(Object::Reference(operation_index + 1));
                             }
 
@@ -357,7 +361,8 @@ impl Tokenizer {
     fn init_keywords(&mut self) {
         self.keywords
             .insert("var".to_string(), OperationType::Variable);
-        self.keywords.insert("input".to_string(), OperationType::Input);
+        self.keywords
+            .insert("input".to_string(), OperationType::Input);
         self.keywords
             .insert("print".to_string(), OperationType::Print);
         self.keywords

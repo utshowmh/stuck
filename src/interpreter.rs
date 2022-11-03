@@ -449,7 +449,10 @@ impl Interpreter {
                             }
                         }
                     } else {
-                        instruction_pointer += 1;
+                        self.invalid_reference(&format!(
+                            "`end` doesn't have a reference associated with it in line {}", 
+                            operation.line
+                        ));
                     }
                 }
 

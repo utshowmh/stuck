@@ -1,0 +1,15 @@
+"enter your name: " println
+var input @name
+"enter your age: " println
+var input @age
+"enter your gender: " println
+var input @gender
+
+"your name is: " print 
+name print 
+" a " print 
+age print 
+" years " print 
+" old " print
+gender print
+"." println
