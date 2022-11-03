@@ -361,12 +361,16 @@ impl Tokenizer {
     fn init_keywords(&mut self) {
         self.keywords
             .insert("var".to_string(), OperationType::Variable);
+
         self.keywords
             .insert("input".to_string(), OperationType::Input);
         self.keywords
             .insert("print".to_string(), OperationType::Print);
         self.keywords
             .insert("println".to_string(), OperationType::Println);
+
+        self.keywords.insert("and".to_string(), OperationType::And);
+
         self.keywords.insert("if".to_string(), OperationType::If);
         self.keywords
             .insert("then".to_string(), OperationType::Then);

@@ -1,4 +1,4 @@
-use std::{collections::HashMap, process::exit, io::stdin};
+use std::{collections::HashMap, io::stdin, process::exit};
 
 use crate::{
     object::{Number, Object},
@@ -320,6 +320,32 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::And => {
+                    if self.stack.len() < 2 {
+                        self.stack_underflow(&format!(
+                            "`and` operation requires two operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    let b = self.stack.pop().unwrap();
+                    match (a, b) {
+                        (Object::Number(x), Object::Number(y)) => {
+                            self.stack
+                                .push(Object::Number(((x != 0. && y != 0.) as usize) as Number));
+                        }
+                        _ => {
+                            self.invalid_type(&format!(
+                                "`>` is only usable with number in line {}",
+                                operation.line
+                            ));
+                        }
+                    }
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::If => {
                     instruction_pointer += 1;
                 }
@@ -450,7 +476,7 @@ impl Interpreter {
                         }
                     } else {
                         self.invalid_reference(&format!(
-                            "`end` doesn't have a reference associated with it in line {}", 
+                            "`end` doesn't have a reference associated with it in line {}",
                             operation.line
                         ));
                     }

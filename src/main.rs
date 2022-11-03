@@ -3,7 +3,12 @@ mod object;
 mod operation;
 mod tokenizer;
 
-use std::{env::args, fs::read_to_string, process::exit, io::{stdin, stdout, Write}};
+use std::{
+    env::args,
+    fs::read_to_string,
+    io::{stdin, stdout, Write},
+    process::exit,
+};
 
 use interpreter::Interpreter;
 
@@ -33,6 +38,7 @@ fn main() {
                 "help" => {
                     help(None);
                 }
+
                 source_path => {
                     let mut interpreter = Interpreter::new();
                     let mut source = read_to_string(source_path).unwrap_or_else(|err| {
@@ -44,6 +50,23 @@ fn main() {
                 }
             };
         }
+        3 => match args[2].as_str() {
+            "-i" => {
+                let mut interpreter = Interpreter::new();
+                let mut source = read_to_string(&args[1]).unwrap_or_else(|err| {
+                    eprintln!("Error: {:#?}", err);
+                    exit(2);
+                });
+                source.push('\n');
+                interpreter.run(&source);
+            }
+
+            "-c" => {
+                todo!();
+            }
+
+            invalid_flag => help(Some(&format!("Error: invalid flag `{}`", invalid_flag))),
+        },
         _ => {
             help(Some("invalid subcommands"));
         }
@@ -54,9 +77,14 @@ fn help(message: Option<&str>) {
     println!(
         "\
 program: stuck
-usage: stuck [subcommands]
+usage: 
+commands:
+        stuck               :   runs a stuck repl.
+        stuck [subcommands] [options]
 subcommands:
         [source_file]       :   interprets the file.
+        [source_file] -i    :   interprets the file.
+        [source_file] -c    :   compiles the file.
         help                :   prints this page./
     "
     );

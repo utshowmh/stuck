@@ -9,4 +9,4 @@ edition = "2021"
 
 [profile.release]
 strip = true
-opt-level = "s"
+opt-level = 3
