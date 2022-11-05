@@ -369,9 +369,6 @@ impl Tokenizer {
 
     fn init_keywords(&mut self) {
         self.keywords
-            .insert("var".to_string(), OperationType::Variable);
-
-        self.keywords
             .insert("input".to_string(), OperationType::Input);
         self.keywords
             .insert("print".to_string(), OperationType::Print);

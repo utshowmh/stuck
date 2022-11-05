@@ -7,7 +7,6 @@ pub enum OperationType {
     String,
 
     Assignment,
-    Variable,
 
     Plus,
     Minus,

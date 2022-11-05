@@ -1,7 +1,7 @@
 # A Program that Calculates Multiplication Table
 
-var 0 @j
-var 0 @i
+0 @j
+0 @i
 
 while i 10 < do
     i 1 + @i

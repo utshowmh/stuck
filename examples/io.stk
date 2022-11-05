@@ -1,13 +1,13 @@
 "enter your name: " println
-var input @name
+input @name
 "enter your age: " println
-var input @age
+input @age
 "enter your gender: " println
-var input @gender
+input @gender
 
-"your name is: " print 
+"your are " print 
 name print 
-" a " print 
+", a " print 
 age print 
 " years " print 
 " old " print

@@ -1,7 +1,7 @@
 # A Counter Program
 
-var 0 @count                # counter variable
-var 100 @limit              # limit to count to
+0 @count                # counter variable
+100 @limit              # limit to count to
     
 while count limit < do
     count 1 + @count        # increaments counter variable

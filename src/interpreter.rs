@@ -109,10 +109,6 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
-                OperationType::Variable => {
-                    instruction_pointer += 1;
-                }
-
                 OperationType::Assignment => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(

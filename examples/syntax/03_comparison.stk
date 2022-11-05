@@ -1,7 +1,7 @@
 # Working with Comparison Operators
 
-var 420 @x
-var 69 @y
+420 @x
+69 @y
 
 x y = println       # checks if x is equal to y (it's like x == y)
 x y > println       # checks if x is greater than y (it's like x > y)

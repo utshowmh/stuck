@@ -1,5 +1,5 @@
 # comments starts with a `#` and ends with `newline`. there's no multiline comment.
 
-var input @name
-"hello, " print      # prints operand to stdio (it's like print(name))
+input @name
+"hello, " print      # prints operand to stdout (it's like print(name))
 name println

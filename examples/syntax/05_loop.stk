@@ -1,6 +1,6 @@
 # Working with Loops
 
-var 10 @i
+10 @i
 
 while i 0 > do      # `then` takes the operand and if it's 0 (true) then jumps to next `else` or `end` otherwise executes until found any `else` or `end`
     i println
