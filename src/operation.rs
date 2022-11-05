@@ -18,6 +18,7 @@ pub enum OperationType {
     Greater,
     Less,
 
+    Not,
     And,
     Or,
 

@@ -316,10 +316,38 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Not => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "`!` operator requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    match a {
+                        Object::Number(x) => {
+                            if x == 0. {
+                                self.stack.push(Object::Number(1.));
+                            } else {
+                                self.stack.push(Object::Number(0.));
+                            }
+                        }
+                        _ => {
+                            self.invalid_type(&format!(
+                                "'!' is only usable with number in line {}",
+                                operation.line
+                            ));
+                        }
+                    }
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::And => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`and` operation requires two operand in line {}",
+                            "`&` operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -333,7 +361,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`>` is only usable with number in line {}",
+                                "`&` is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -345,7 +373,7 @@ impl Interpreter {
                 OperationType::Or => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`and` operation requires two operand in line {}",
+                            "`|` operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -359,7 +387,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`>` is only usable with number in line {}",
+                                "`|` is only usable with number in line {}",
                                 operation.line
                             ));
                         }
