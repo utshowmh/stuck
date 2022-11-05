@@ -125,6 +125,15 @@ impl Tokenizer {
                     ));
                 }
 
+                '&' => {
+                    self.advance();
+                    self.operations.push(Operation::new(
+                        OperationType::And,
+                        None,
+                        self.line_number,
+                    ));
+                }
+
                 '@' => {
                     self.advance();
                     self.operations.push(Operation::new(
@@ -139,13 +148,13 @@ impl Tokenizer {
                     self.make_string();
                 }
 
-                invalid_token => {
-                    if invalid_token.is_digit(10) {
+                token => {
+                    if token.is_digit(10) {
                         self.make_number();
-                    } else if invalid_token.is_alphabetic() {
+                    } else if token.is_alphabetic() {
                         self.make_identifier();
                     } else {
-                        self.error(&format!("invalid token `{}`", invalid_token));
+                        self.error(&format!("invalid token `{}`", token));
                     }
                 }
             }
@@ -369,16 +378,16 @@ impl Tokenizer {
         self.keywords
             .insert("println".to_string(), OperationType::Println);
 
-        self.keywords.insert("and".to_string(), OperationType::And);
-
         self.keywords.insert("if".to_string(), OperationType::If);
         self.keywords
             .insert("then".to_string(), OperationType::Then);
         self.keywords
             .insert("else".to_string(), OperationType::Else);
+
         self.keywords
             .insert("while".to_string(), OperationType::While);
         self.keywords.insert("do".to_string(), OperationType::Do);
+
         self.keywords.insert("end".to_string(), OperationType::End);
     }
 }
