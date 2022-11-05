@@ -134,6 +134,12 @@ impl Tokenizer {
                     ));
                 }
 
+                '|' => {
+                    self.advance();
+                    self.operations
+                        .push(Operation::new(OperationType::Or, None, self.line_number));
+                }
+
                 '@' => {
                     self.advance();
                     self.operations.push(Operation::new(
