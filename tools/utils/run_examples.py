@@ -8,11 +8,13 @@ ROOT = "./examples"
 
 example_paths = []
 
-for path in walk(ROOT):
-    if len(path) != 3:
-        raise Exception("Underflow!!!")
-    for program in path[2]:
-        example_paths.append(f"{path[0]}/{program}")
+
+def find_files():
+    for path in walk(ROOT):
+        if len(path) != 3:
+            raise Exception("Underflow!!!")
+        for program in path[2]:
+            example_paths.append(f"{path[0]}/{program}")
 
 
 def run_command(command: str):
@@ -22,6 +24,7 @@ def run_command(command: str):
 
 if __name__ == "__main__":
     run_command("cargo build --release")
+    find_files()
     for example_path in example_paths:
         run_command(f"{STUCK_PATH} {example_path}")
         input("[INFO] press [ENTER] to proceed")
