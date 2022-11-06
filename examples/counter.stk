@@ -5,5 +5,5 @@
     
 while count limit < do
     count 1 + @count        # increaments counter variable
-    count println           # prints counter variable
+    count writeln           # prints counter variable
 end 

@@ -32,9 +32,9 @@ pub enum OperationType {
     Do,
     End,
 
-    Input,
-    Print,
-    Println,
+    Read,
+    Write,
+    Writeln,
 }
 
 #[derive(Debug, Clone)]

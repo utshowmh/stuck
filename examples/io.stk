@@ -1,15 +1,15 @@
-"enter your name: " println
-input @name
-"enter your age: " println
-input @age
-"enter your gender: " println
-input @gender
+"enter your name: " writeln
+read @name
+"enter your age: " writeln
+read @age
+"enter your gender: " writeln
+read @gender
 
-"your are " print 
-name print 
-", a " print 
-age print 
-" years " print 
-" old " print
-gender print
-"." println
+"your are " write 
+name write 
+", a " write 
+age write 
+" years " write 
+" old " write
+gender write
+"." writeln

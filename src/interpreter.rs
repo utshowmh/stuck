@@ -556,7 +556,7 @@ impl Interpreter {
                     }
                 }
 
-                OperationType::Input => {
+                OperationType::Read => {
                     let mut object = String::new();
                     stdin().read_line(&mut object).unwrap_or_else(|err| {
                         eprintln!("Error: {:#?}", err);
@@ -572,7 +572,7 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
-                OperationType::Print => {
+                OperationType::Write => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
                             "`print` operation requires one operand in line {}",
@@ -599,7 +599,7 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
-                OperationType::Println => {
+                OperationType::Writeln => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
                             "`println` operation requires one operand in line {}",

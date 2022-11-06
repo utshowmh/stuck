@@ -5,18 +5,18 @@
 while i 100 < do
     i 1 + @i
 
-    i print " -> " print
+    i write " -> " write
     i 3 % 0 = @fizz
     i 5 % 0 = @buzz
     fizz buzz & @fizzbuzz
 
     if fizzbuzz then
-        "fizzbuzz" println
+        "fizzbuzz" writeln
     else fizz then
-        "fizz" println
+        "fizz" writeln
     else buzz then
-        "buzz" println
+        "buzz" writeln
     else
-        "" println
+        "" writeln
     end
 end

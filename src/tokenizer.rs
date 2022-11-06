@@ -368,7 +368,11 @@ impl Tokenizer {
             string.push(current_charecter);
             self.advance();
             if current_charecter == '"' {
-                let string = string.strip_suffix("\"").unwrap();
+                let string = string
+                    .strip_suffix("\"")
+                    .unwrap()
+                    .replace("\\n", "\n")
+                    .replace("\\t", "\t");
                 self.operations.push(Operation::new(
                     OperationType::String,
                     Some(Object::String(string.to_string())),
@@ -389,11 +393,11 @@ impl Tokenizer {
             .insert("false".to_string(), OperationType::False);
 
         self.keywords
-            .insert("input".to_string(), OperationType::Input);
+            .insert("read".to_string(), OperationType::Read);
         self.keywords
-            .insert("print".to_string(), OperationType::Print);
+            .insert("write".to_string(), OperationType::Write);
         self.keywords
-            .insert("println".to_string(), OperationType::Println);
+            .insert("writeln".to_string(), OperationType::Writeln);
 
         self.keywords.insert("if".to_string(), OperationType::If);
         self.keywords

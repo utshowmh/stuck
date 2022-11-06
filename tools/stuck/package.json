@@ -2,6 +2,7 @@
   "name": "stuck",
   "displayName": "stuck",
   "description": "stuck language support",
+  "author": "utshowmh",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.72.0"
@@ -13,7 +14,7 @@
     "languages": [{
       "id": "stuck",
       "aliases": ["stuck", "stuck"],
-      "extensions": ["stk"],
+      "extensions": ["stuck", "stk"],
       "configuration": "./language-configuration.json"
     }],
     "grammars": [{

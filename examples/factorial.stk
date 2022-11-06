@@ -8,4 +8,4 @@ while limit 0 > do
     limit 1 - @limit                # updating the limit
 end
 
-fatctorial println                  # prints factorial
+fatctorial writeln                  # prints factorial

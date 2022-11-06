@@ -1,7 +1,7 @@
 # Woeking with Arithmetic Operators
 
-210 210 + println       # it's like 210 + 210
-1000 580 - println      # it's like 1000 - 580
-42 10 * println         # it's like 1000 * 580
-4200 10 / println       # it's like 1000 / 580
-4200 10 % println       # it's like 1000 % 580
+210 210 + writeln       # it's like 210 + 210
+1000 580 - writeln      # it's like 1000 - 580
+42 10 * writeln         # it's like 1000 * 580
+4200 10 / writeln       # it's like 1000 / 580
+4200 10 % writeln       # it's like 1000 % 580

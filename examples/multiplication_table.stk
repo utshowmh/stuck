@@ -5,11 +5,11 @@
 
 while i 10 < do
     i 1 + @i
-    "multiplication table of " print
-    i println
+    "multiplication table of " write
+    i writeln
     while j 10 < do
         j 1 + @j
-        i j * println
+        i j * writeln
     end
     0 @j
 end 

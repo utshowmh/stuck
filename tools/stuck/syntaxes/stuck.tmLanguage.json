@@ -84,7 +84,7 @@
     },
     {
       "comment": "everything being a reserved word, not a value and needing a 'end' is a..",
-      "match": "(?<!\\.)\\b(var|if|else|end|while|do)\\b(?![?!])",
+      "match": "(?<!\\.)\\b(if|else|then|while|do|end)\\b(?![?!])",
       "name": "keyword.control.stk"
     },
     {
@@ -96,10 +96,6 @@
       "comment": "contextual smart pair support",
       "match": "(?<={)(\\s+)",
       "name": "meta.syntax.stk.start-block"
-    },
-    {
-      "match": "(?<!\\.)\\b(input|print|println)\\?",
-      "name": "keyword.control.pseudo-method.stk"
     },
     {
       "match": "\\bnil\\b(?![?!])",
@@ -119,18 +115,18 @@
     },
     {
       "comment": "Everything being a method but having a special function is a..",
-      "match": "\\b(input|print|println)\\b(?![?!])",
+      "match": "\\b(read|write|writeln)\\b(?![?!])",
       "name": "keyword.other.special-method.stk"
     },
     {
-      "begin": "\\b(?<!\\.|::)(require|require_relative)\\b(?![?!])",
+      "begin": "\\b(?<!\\.|::)(include)\\b(?![?!])",
       "captures": {
         "1": {
           "name": "keyword.other.special-method.stk"
         }
       },
       "end": "$|(?=#|})",
-      "name": "meta.require.stk",
+      "name": "meta.include.stk",
       "patterns": [
         {
           "include": "$self"

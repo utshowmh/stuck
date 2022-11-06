@@ -3,6 +3,6 @@
 true @x
 false @y
 
-x y & println       # checks if x and y are truthy (it's like x and y)
-x y | println       # checks if x or y is truthy (it's like x or y)
-x ! println         # checks if x's truthiness flips it's boolean value (it's like not x)
+x y & writeln       # checks if x and y are truthy (it's like x and y)
+x y | writeln       # checks if x or y is truthy (it's like x or y)
+x ! writeln         # checks if x's truthiness flips it's boolean value (it's like not x)
