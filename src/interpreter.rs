@@ -1,7 +1,7 @@
 use std::{collections::HashMap, io::stdin, process::exit};
 
 use crate::{
-    object::{Number, Object},
+    object::{Boolean, Object},
     operation::{Operation, OperationType},
     tokenizer::Tokenizer,
 };
@@ -56,9 +56,13 @@ impl Interpreter {
                                                 self.stack.push(Object::String(string.clone()))
                                             }
 
+                                            Object::Boolean(boolean) => {
+                                                self.stack.push(Object::Boolean(boolean.clone()))
+                                            }
+
                                             _ => {
-                                                self.unknown_error(&format!(
-                                                    "in line {}",
+                                                self.invalid_variable_type(&format!(
+                                                    "in line {}. can use only number, string or boolean",
                                                     operation.line
                                                 ));
                                             }
@@ -105,6 +109,18 @@ impl Interpreter {
                                 .invalid_type(&format!("expected number, found `{:?}`", operation)),
                         }
                     }
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::True => {
+                    self.stack.push(Object::Boolean(Boolean::True));
+
+                    instruction_pointer += 1;
+                }
+
+                OperationType::False => {
+                    self.stack.push(Object::Boolean(Boolean::False));
 
                     instruction_pointer += 1;
                 }
@@ -258,8 +274,11 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
-                    let a = ((a == b) as usize) as Number;
-                    self.stack.push(Object::Number(a));
+                    if a == b {
+                        self.stack.push(Object::Boolean(Boolean::True));
+                    } else {
+                        self.stack.push(Object::Boolean(Boolean::False));
+                    }
 
                     instruction_pointer += 1;
                 }
@@ -276,8 +295,11 @@ impl Interpreter {
                     let b = self.stack.pop().unwrap();
                     match (a, b) {
                         (Object::Number(x), Object::Number(y)) => {
-                            self.stack
-                                .push(Object::Number(((y > x) as usize) as Number));
+                            if y > x {
+                                self.stack.push(Object::Boolean(Boolean::True));
+                            } else {
+                                self.stack.push(Object::Boolean(Boolean::False));
+                            }
                         }
                         _ => {
                             self.invalid_type(&format!(
@@ -302,8 +324,11 @@ impl Interpreter {
                     let b = self.stack.pop().unwrap();
                     match (a, b) {
                         (Object::Number(x), Object::Number(y)) => {
-                            self.stack
-                                .push(Object::Number(((y < x) as usize) as Number));
+                            if y < x {
+                                self.stack.push(Object::Boolean(Boolean::True));
+                            } else {
+                                self.stack.push(Object::Boolean(Boolean::False));
+                            }
                         }
                         _ => {
                             self.invalid_type(&format!(
@@ -326,16 +351,13 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     match a {
-                        Object::Number(x) => {
-                            if x == 0. {
-                                self.stack.push(Object::Number(1.));
-                            } else {
-                                self.stack.push(Object::Number(0.));
-                            }
-                        }
+                        Object::Boolean(x) => match x {
+                            Boolean::True => self.stack.push(Object::Boolean(Boolean::False)),
+                            Boolean::False => self.stack.push(Object::Boolean(Boolean::True)),
+                        },
                         _ => {
                             self.invalid_type(&format!(
-                                "'!' is only usable with number in line {}",
+                                "'!' is only usable with boolean in line {}",
                                 operation.line
                             ));
                         }
@@ -355,13 +377,17 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
                     match (a, b) {
-                        (Object::Number(x), Object::Number(y)) => {
-                            self.stack
-                                .push(Object::Number(((x != 0. && y != 0.) as usize) as Number));
-                        }
+                        (Object::Boolean(x), Object::Boolean(y)) => match (x, y) {
+                            (Boolean::True, Boolean::True) => {
+                                self.stack.push(Object::Boolean(Boolean::True))
+                            }
+
+                            _ => self.stack.push(Object::Boolean(Boolean::False)),
+                        },
+
                         _ => {
                             self.invalid_type(&format!(
-                                "`&` is only usable with number in line {}",
+                                "`&` is only usable with boolean in line {}",
                                 operation.line
                             ));
                         }
@@ -381,13 +407,17 @@ impl Interpreter {
                     let a = self.stack.pop().unwrap();
                     let b = self.stack.pop().unwrap();
                     match (a, b) {
-                        (Object::Number(x), Object::Number(y)) => {
-                            self.stack
-                                .push(Object::Number(((x != 0. || y != 0.) as usize) as Number));
-                        }
+                        (Object::Boolean(x), Object::Boolean(y)) => match (x, y) {
+                            (Boolean::False, Boolean::False) => {
+                                self.stack.push(Object::Boolean(Boolean::False))
+                            }
+
+                            _ => self.stack.push(Object::Boolean(Boolean::True)),
+                        },
+
                         _ => {
                             self.invalid_type(&format!(
-                                "`|` is only usable with number in line {}",
+                                "`|` is only usable with boolean in line {}",
                                 operation.line
                             ));
                         }
@@ -410,20 +440,17 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     match a {
-                        Object::Number(boolean) => {
+                        Object::Boolean(boolean) => {
                             if let Some(end_block) = &operation.operand {
                                 match end_block {
-                                    Object::Reference(number) => {
-                                        if boolean == 0. {
-                                            instruction_pointer = number.to_owned();
-                                        } else {
-                                            instruction_pointer += 1;
-                                        }
-                                    }
-                                    invalid_type => {
-                                        self.invalid_type(&format!(
-                                            "can't use `{:?}` with `then` (expected integer) in line {}",
-                                            invalid_type, operation.line
+                                    Object::Reference(number) => match boolean {
+                                        Boolean::False => instruction_pointer = number.to_owned(),
+                                        Boolean::True => instruction_pointer += 1,
+                                    },
+                                    _ => {
+                                        self.invalid_reference(&format!(
+                                            "invalid reference for `then` (expected integer) in line {}",
+                                            operation.line
                                         ));
                                     }
                                 }
@@ -449,10 +476,10 @@ impl Interpreter {
                             Object::Reference(number) => {
                                 instruction_pointer = number.to_owned();
                             }
-                            invalid_type => {
-                                self.invalid_type(&format!(
-                                    "can't use `{:?}` with `else` (expected integer) in line {}",
-                                    invalid_type, operation.line
+                            _ => {
+                                self.invalid_reference(&format!(
+                                    "invalid reference for `else` (expected integer) in line {}",
+                                    operation.line
                                 ));
                             }
                         }
@@ -478,20 +505,17 @@ impl Interpreter {
 
                     let a = self.stack.pop().unwrap();
                     match a {
-                        Object::Number(boolean) => {
+                        Object::Boolean(boolean) => {
                             if let Some(end_block) = &operation.operand {
                                 match end_block {
-                                    Object::Reference(number) => {
-                                        if boolean == 0. {
-                                            instruction_pointer = number.to_owned();
-                                        } else {
-                                            instruction_pointer += 1;
-                                        }
-                                    }
-                                    invalid_type => {
-                                        self.invalid_type(&format!(
-                                            "can't use `{:?}` with `then` (expected integer) in line {}",
-                                            invalid_type, operation.line
+                                    Object::Reference(number) => match boolean {
+                                        Boolean::False => instruction_pointer = number.to_owned(),
+                                        Boolean::True => instruction_pointer += 1,
+                                    },
+                                    _ => {
+                                        self.invalid_reference(&format!(
+                                            "invalid reference for `do` (expected integer) in line {}",
+                                            operation.line
                                         ));
                                     }
                                 }
@@ -560,6 +584,10 @@ impl Interpreter {
                     match a {
                         Object::String(string) => print!("{}", string),
                         Object::Number(number) => print!("{}", number),
+                        Object::Boolean(boolean) => match boolean {
+                            Boolean::True => print!("true"),
+                            Boolean::False => print!("false"),
+                        },
                         _ => {
                             self.invalid_type(&format!(
                                 "`print` can use with only number or string in line {}",
@@ -574,7 +602,7 @@ impl Interpreter {
                 OperationType::Println => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`print` operation requires one operand in line {}",
+                            "`println` operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -583,9 +611,13 @@ impl Interpreter {
                     match a {
                         Object::String(string) => println!("{}", string),
                         Object::Number(number) => println!("{}", number),
+                        Object::Boolean(boolean) => match boolean {
+                            Boolean::True => println!("true"),
+                            Boolean::False => println!("false"),
+                        },
                         _ => {
                             self.invalid_type(&format!(
-                                "`print` can use with only number or string in line {}",
+                                "`println` can use with only number or string in line {}",
                                 operation.line
                             ));
                         }
@@ -615,12 +647,12 @@ impl Interpreter {
         self.error("Invalid Type", message);
     }
 
-    fn unknown_error(&self, message: &str) {
-        self.error("Unknown Error", message);
+    fn invalid_variable_type(&self, message: &str) {
+        self.error("Invalid Variable Type", message);
     }
 
     fn error(&self, e_type: &str, message: &str) {
-        eprintln!("{}: {}", e_type, message);
+        eprintln!("{}: {}.", e_type, message);
         exit(1);
     }
 }

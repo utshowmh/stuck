@@ -1,9 +1,14 @@
-pub type Number = f64;
+#[derive(Debug, PartialEq, Clone)]
+pub enum Boolean {
+    True,
+    False,
+}
 
 #[derive(Debug, PartialEq, Clone)]
 pub enum Object {
     Identifier(String),
-    Number(Number),
+    Number(f64),
     String(String),
+    Boolean(Boolean),
     Reference(usize),
 }

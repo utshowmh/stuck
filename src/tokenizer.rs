@@ -384,6 +384,11 @@ impl Tokenizer {
 
     fn init_keywords(&mut self) {
         self.keywords
+            .insert("true".to_string(), OperationType::True);
+        self.keywords
+            .insert("false".to_string(), OperationType::False);
+
+        self.keywords
             .insert("input".to_string(), OperationType::Input);
         self.keywords
             .insert("print".to_string(), OperationType::Print);

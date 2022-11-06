@@ -3,8 +3,11 @@ use crate::object::Object;
 #[derive(Debug, Clone)]
 pub enum OperationType {
     Identifier,
+
     Number,
     String,
+    True,
+    False,
 
     Assignment,
 

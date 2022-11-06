@@ -6,3 +6,5 @@ number 20 + @number     # mutates number (it's like number = number + 20)
 number println          # prints updated   
 "utsho" @author         # declares a variable typeof string
 author println
+true @author            # variable types are dynamic
+author println
