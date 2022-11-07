@@ -3,10 +3,10 @@
 100 @x
 50 @y
 
-if x y < then       # `then` takes the operand and if it's 0 (true) then jumps to next `else` or `end` otherwise executes until found any `else` or `end`
+if x y < then       # Operator 'then' takes the operand and if it's 'false' then jumps to the next 'else' or 'end' otherwise executes operations until it finds any 'else' or 'end'.
     69 writeln
 else x y > then
     420 writeln
 else
     96 writeln
-end                 # `end` ends the `if` block
+end                 # Operator 'end' ends the starting block; 'if' block in this case.

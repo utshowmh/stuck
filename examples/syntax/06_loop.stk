@@ -1,8 +1,8 @@
-# Working with Loops
+# Working with Loops.
 
 10 @i
 
-while i 0 > do      # `then` takes the operand and if it's 0 (true) then jumps to next `else` or `end` otherwise executes until found any `else` or `end`
+while i 0 > do      # Operator 'do' takes the operand and if it's 'false' then jumps to the 'end' otherwise executes operations while the operand is 'true'.
     i writeln
     i 1 - @i
-end                 # `end` ends `while` block
+end                 # Operator 'end' ends the starting block; 'if' block in this case.

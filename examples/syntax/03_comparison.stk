@@ -1,8 +1,8 @@
-# Working with Comparison Operators
+# Working with Comparison Operators.
 
 420 @x
 69 @y
 
-x y = writeln       # checks if x is equal to y (it's like x == y)
-x y > writeln       # checks if x is greater than y (it's like x > y)
-x y < writeln       # checks if x is less than y (it's like x < y)
+x y = writeln       # Checks if x is equal to y (it's like 'x == y').
+x y > writeln       # Checks if x is greater than y (it's like 'x > y').
+x y < writeln       # Checks if x is less than y (it's like 'x < y').

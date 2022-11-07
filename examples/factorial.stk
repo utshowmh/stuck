@@ -1,11 +1,11 @@
-# A Program that Calculates Factorial
+# A program that calculates Factorial.
 
-10 @limit                           # nth number (calculate until)
-1 @fatctorial                       # calculated factorial
+10 @limit                           # The nth number (calculate until).
+1 @fatctorial                       # Calculated factorial.
 
 while limit 0 > do
-    fatctorial limit * @fatctorial  # calculates factorial (using n * n - 1 * ... * 1)
-    limit 1 - @limit                # updating the limit
+    fatctorial limit * @fatctorial  # Calculating factorial (using n * n - 1 * ... * 1).
+    limit 1 - @limit
 end
 
-fatctorial writeln                  # prints factorial
+fatctorial writeln

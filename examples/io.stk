@@ -1,3 +1,5 @@
+# A program that shows how to intaract with IO.
+
 "enter your name: " writeln
 read @name
 "enter your age: " writeln

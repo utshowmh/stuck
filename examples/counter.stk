@@ -1,9 +1,9 @@
-# A Counter Program
+# A counter program.
 
-0 @count                # counter variable
-100 @limit              # limit to count to
+0 @count                # Counter variable.
+100 @limit              # Limit 'till count to.
     
 while count limit < do
-    count 1 + @count        # increaments counter variable
-    count writeln           # prints counter variable
-end 
+    count 1 + @count
+    count writeln
+end
