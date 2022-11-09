@@ -1,0 +1,10 @@
+# Function starts with '[' and ends with ']'. Functions can not take any argument but you can provide one by declaring a variable before the invocation of the function as shown bellow.
+
+[
+    "you are ... " write
+    name writeln
+] @say_my_name
+
+"utsho" @name
+
+say_my_name

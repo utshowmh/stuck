@@ -45,7 +45,7 @@ fn main() {
                         eprintln!("Error: {:#?}", err);
                         exit(2);
                     });
-                    source.push('\n');
+                    source.push('\t');
                     interpreter.run(&source);
                 }
             };

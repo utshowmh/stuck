@@ -9,6 +9,8 @@ pub enum OperationType {
     True,
     False,
 
+    Function,
+
     Assignment,
 
     Plus,

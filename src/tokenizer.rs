@@ -163,6 +163,25 @@ impl Tokenizer {
                     self.make_string();
                 }
 
+                '[' => {
+                    self.advance();
+                    self.operations.push(Operation::new(
+                        OperationType::Function,
+                        None,
+                        self.line_number,
+                    ));
+                    self.make_fuction();
+                }
+
+                ']' => {
+                    self.advance();
+                    self.operations.push(Operation::new(
+                        OperationType::Function,
+                        None,
+                        self.line_number,
+                    ));
+                }
+
                 token => {
                     if token.is_digit(10) {
                         self.make_number();
@@ -189,6 +208,23 @@ impl Tokenizer {
                 OperationType::While => block_references.push(operation_index),
 
                 OperationType::Do => block_references.push(operation_index),
+
+                OperationType::Function => {
+                    if let Some(opening_block) = block_references.pop() {
+                        let operation = &self.operations[opening_block];
+                        match &operation.op_type {
+                            OperationType::Function => {
+                                crossreferened_operations[opening_block].operand =
+                                    Some(Object::Reference(operation_index));
+                            }
+
+                            invalid_block => self
+                                .error(&format!("can't end `fuction` with `{:?}`", invalid_block)),
+                        }
+                    } else {
+                        block_references.push(operation_index);
+                    }
+                }
 
                 OperationType::Else => {
                     if let Some(then_block) = block_references.pop() {
@@ -384,6 +420,27 @@ impl Tokenizer {
             }
         }
         self.error("untermated string");
+    }
+
+    fn make_fuction(&mut self) {
+        while let Some(current_charecter) = self.current_charecter {
+            if current_charecter == ']' {
+                self.operations.push(Operation::new(
+                    OperationType::Function,
+                    None,
+                    self.line_number,
+                ));
+                self.advance();
+                return;
+            } else if current_charecter == '\n' {
+                self.advance();
+                self.line_number += 1;
+            } else {
+                self.scan();
+                return;
+            }
+        }
+        self.error("untermated function");
     }
 
     fn init_keywords(&mut self) {

@@ -1,7 +1,7 @@
 use std::{collections::HashMap, io::stdin, process::exit};
 
 use crate::{
-    object::{Boolean, Object},
+    object::{Boolean, Function, Object},
     operation::{Operation, OperationType},
     tokenizer::Tokenizer,
 };
@@ -10,7 +10,8 @@ pub struct Interpreter {
     program: Vec<Operation>,
     stack: Vec<Object>,
     variables: HashMap<String, Object>,
-    registers: Vec<Object>,
+    registers_ia: Vec<Object>,
+    register_f: Vec<usize>,
 }
 
 impl Interpreter {
@@ -19,7 +20,8 @@ impl Interpreter {
             program: Vec::new(),
             stack: Vec::new(),
             variables: HashMap::new(),
-            registers: Vec::new(),
+            registers_ia: Vec::new(),
+            register_f: Vec::new(),
         }
     }
 
@@ -43,7 +45,7 @@ impl Interpreter {
                     if let Some(variable) = &operation.operand {
                         match variable {
                             Object::Identifier(identifier) => {
-                                if let Some(object) = self.registers.pop() {
+                                if let Some(object) = self.registers_ia.pop() {
                                     self.variables.insert(identifier.to_string(), object);
                                 } else {
                                     if let Some(object) = self.variables.get(identifier) {
@@ -60,16 +62,26 @@ impl Interpreter {
                                                 self.stack.push(Object::Boolean(boolean.clone()))
                                             }
 
+                                            Object::Function(function) => {
+                                                self.stack.push(Object::Function(
+                                                    Function::assign_called_from(
+                                                        function.opening_block,
+                                                        instruction_pointer + 1,
+                                                    ),
+                                                ));
+                                                instruction_pointer = function.opening_block;
+                                            }
+
                                             _ => {
                                                 self.invalid_variable_type(&format!(
-                                                    "in line {}. can use only number, string or boolean",
+                                                    "in line {}. can use only number, string, boolean or function ('[]')",
                                                     operation.line
                                                 ));
                                             }
                                         }
                                     } else {
                                         self.undefined_variable(&format!(
-                                            "variable `{}` does not exist in line {}",
+                                            "variable '{}' does not exist in line {}",
                                             identifier, operation.line
                                         ));
                                     }
@@ -91,7 +103,7 @@ impl Interpreter {
                             }
 
                             _ => self
-                                .invalid_type(&format!("expected string, found `{:?}`", operation)),
+                                .invalid_type(&format!("expected string, found '{:?}'", operation)),
                         }
                     }
 
@@ -106,7 +118,7 @@ impl Interpreter {
                             }
 
                             _ => self
-                                .invalid_type(&format!("expected number, found `{:?}`", operation)),
+                                .invalid_type(&format!("expected number, found '{:?}'", operation)),
                         }
                     }
 
@@ -125,16 +137,48 @@ impl Interpreter {
                     instruction_pointer += 1;
                 }
 
+                OperationType::Function => {
+                    if let Some(ending_block) = &operation.operand {
+                        match ending_block {
+                            Object::Reference(ending_block) => {
+                                self.register_f.push(instruction_pointer);
+                                instruction_pointer = ending_block.to_owned();
+                            }
+
+                            _ => {
+                                self.invalid_reference(&format!(
+                                    "invalid reference for 'function' (expected integer) in line {}",
+                                    operation.line
+                                ));
+                            }
+                        }
+                    } else {
+                        if let Some(opening_block) = self.register_f.pop() {
+                            self.stack
+                                .push(Object::Function(Function::new(opening_block)));
+                            instruction_pointer += 1;
+                        } else {
+                            instruction_pointer = match self.stack.pop().unwrap() {
+                                Object::Function(function) => function.called_from,
+                                _ => {
+                                    self.invalid_reference(&format!("could not figure out where the is being called from in line {}", operation.line));
+                                    0
+                                }
+                            }
+                        }
+                    }
+                }
+
                 OperationType::Assignment => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "can't declare variable without a value in line {}",
+                            "can not declare variable without a value in line {}",
                             operation.line
                         ));
                     }
 
                     let object = self.stack.pop().unwrap();
-                    self.registers.push(object);
+                    self.registers_ia.push(object);
 
                     instruction_pointer += 1;
                 }
@@ -142,7 +186,7 @@ impl Interpreter {
                 OperationType::Plus => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`+` operation requires two operand in line {}",
+                            "'+' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -155,7 +199,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`+` is only usable with number in line {}",
+                                "'+' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -167,7 +211,7 @@ impl Interpreter {
                 OperationType::Minus => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`-` operation requires two operand in line {}",
+                            "'-' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -180,7 +224,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`-` is only usable with number in line {}",
+                                "'-' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -192,7 +236,7 @@ impl Interpreter {
                 OperationType::Multiplication => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`*` operation requires two operand in line {}",
+                            "'*' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -205,7 +249,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`*` is only usable with number in line {}",
+                                "'*' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -217,7 +261,7 @@ impl Interpreter {
                 OperationType::Division => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`/` operation requires two operand in line {}",
+                            "'/' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -230,7 +274,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`/` is only usable with number in line {}",
+                                "'/' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -242,7 +286,7 @@ impl Interpreter {
                 OperationType::Modulus => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`/` operation requires two operand in line {}",
+                            "'/' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -255,7 +299,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`/` is only usable with number in line {}",
+                                "'/' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -267,7 +311,7 @@ impl Interpreter {
                 OperationType::Equal => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`=` operation requires two operand in line {}",
+                            "'=' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -286,7 +330,7 @@ impl Interpreter {
                 OperationType::Greater => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`>` operation requires two operand in line {}",
+                            "'>' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -303,7 +347,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`>` is only usable with number in line {}",
+                                "'>' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -315,7 +359,7 @@ impl Interpreter {
                 OperationType::Less => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`>` operation requires two operand in line {}",
+                            "'>' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -332,7 +376,7 @@ impl Interpreter {
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`<` is only usable with number in line {}",
+                                "'<' is only usable with number in line {}",
                                 operation.line
                             ));
                         }
@@ -344,7 +388,7 @@ impl Interpreter {
                 OperationType::Not => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`!` operator requires one operand in line {}",
+                            "'!' operator requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -369,7 +413,7 @@ impl Interpreter {
                 OperationType::And => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`&` operation requires two operand in line {}",
+                            "'&' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -387,7 +431,7 @@ impl Interpreter {
 
                         _ => {
                             self.invalid_type(&format!(
-                                "`&` is only usable with boolean in line {}",
+                                "'&' is only usable with boolean in line {}",
                                 operation.line
                             ));
                         }
@@ -399,7 +443,7 @@ impl Interpreter {
                 OperationType::Or => {
                     if self.stack.len() < 2 {
                         self.stack_underflow(&format!(
-                            "`|` operation requires two operand in line {}",
+                            "'|' operation requires two operand in line {}",
                             operation.line
                         ));
                     }
@@ -417,7 +461,7 @@ impl Interpreter {
 
                         _ => {
                             self.invalid_type(&format!(
-                                "`|` is only usable with boolean in line {}",
+                                "'|' is only usable with boolean in line {}",
                                 operation.line
                             ));
                         }
@@ -433,7 +477,7 @@ impl Interpreter {
                 OperationType::Then => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`then` operation requires one operand in line {}",
+                            "'then' operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -449,21 +493,21 @@ impl Interpreter {
                                     },
                                     _ => {
                                         self.invalid_reference(&format!(
-                                            "invalid reference for `then` (expected integer) in line {}",
+                                            "invalid reference for 'then' (expected integer) in line {}",
                                             operation.line
                                         ));
                                     }
                                 }
                             } else {
                                 self.invalid_reference(&format!(
-                                    "`then` does not have reference to it's `end` or `else` block in line {}",
+                                    "'then' does not have reference to it's 'end' or 'else' block in line {}",
                                     operation.line
                                 ));
                             }
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`then` doesn't have a reference associated with it in line {}",
+                                "'then' doesn't have a reference associated with it in line {}",
                                 operation.line
                             ));
                         }
@@ -478,14 +522,14 @@ impl Interpreter {
                             }
                             _ => {
                                 self.invalid_reference(&format!(
-                                    "invalid reference for `else` (expected integer) in line {}",
+                                    "invalid reference for 'else' (expected integer) in line {}",
                                     operation.line
                                 ));
                             }
                         }
                     } else {
                         self.invalid_reference(&format!(
-                            "`else` does not have reference to it's `end` block in line {}",
+                            "'else' does not have reference to it's 'end' block in line {}",
                             operation.line
                         ));
                     }
@@ -498,7 +542,7 @@ impl Interpreter {
                 OperationType::Do => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`do` operation requires one operand in line {}",
+                            "'do' operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -514,21 +558,21 @@ impl Interpreter {
                                     },
                                     _ => {
                                         self.invalid_reference(&format!(
-                                            "invalid reference for `do` (expected integer) in line {}",
+                                            "invalid reference for 'do' (expected integer) in line {}",
                                             operation.line
                                         ));
                                     }
                                 }
                             } else {
                                 self.invalid_reference(&format!(
-                                    "`do` does not have reference to it's `end` block in line {}",
+                                    "'do' does not have reference to it's 'end' block in line {}",
                                     operation.line
                                 ));
                             }
                         }
                         _ => {
                             self.invalid_type(&format!(
-                                "`then` doesn't have a reference associated with it in line {}",
+                                "'then' doesn't have a reference associated with it in line {}",
                                 operation.line
                             ));
                         }
@@ -543,14 +587,14 @@ impl Interpreter {
                             }
                             invalid_type => {
                                 self.invalid_type(&format!(
-                                    "can't use `{:?}` with `end` (expected integer) in line {}",
+                                    "can not use '{:?}' with 'end' (expected integer) in line {}",
                                     invalid_type, operation.line
                                 ));
                             }
                         }
                     } else {
                         self.invalid_reference(&format!(
-                            "`end` doesn't have a reference associated with it in line {}",
+                            "'end' doesn't have a reference associated with it in line {}",
                             operation.line
                         ));
                     }
@@ -575,7 +619,7 @@ impl Interpreter {
                 OperationType::Write => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`print` operation requires one operand in line {}",
+                            "'write' operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -590,7 +634,7 @@ impl Interpreter {
                         },
                         _ => {
                             self.invalid_type(&format!(
-                                "`print` can use with only number or string in line {}",
+                                "'write' can use with only number or string in line {}",
                                 operation.line
                             ));
                         }
@@ -602,7 +646,7 @@ impl Interpreter {
                 OperationType::Writeln => {
                     if self.stack.len() < 1 {
                         self.stack_underflow(&format!(
-                            "`println` operation requires one operand in line {}",
+                            "'writeln' operation requires one operand in line {}",
                             operation.line
                         ));
                     }
@@ -617,7 +661,7 @@ impl Interpreter {
                         },
                         _ => {
                             self.invalid_type(&format!(
-                                "`println` can use with only number or string in line {}",
+                                "'writeln' can use with only number or string in line {}",
                                 operation.line
                             ));
                         }
@@ -632,23 +676,23 @@ impl Interpreter {
 
 impl Interpreter {
     fn stack_underflow(&self, message: &str) {
-        self.error("Stack Underflow", message);
+        self.error("StackUnderflow", message);
     }
 
     fn undefined_variable(&self, message: &str) {
-        self.error("Undefined Variable", message);
+        self.error("UndefinedVariable", message);
     }
 
     fn invalid_reference(&self, message: &str) {
-        self.error("Invalid Reference", message);
+        self.error("InvalidReference", message);
     }
 
     fn invalid_type(&self, message: &str) {
-        self.error("Invalid Type", message);
+        self.error("InvalidType", message);
     }
 
     fn invalid_variable_type(&self, message: &str) {
-        self.error("Invalid Variable Type", message);
+        self.error("InvalidVariableType", message);
     }
 
     fn error(&self, e_type: &str, message: &str) {
