@@ -115,7 +115,7 @@
     },
     {
       "comment": "Everything being a method but having a special function is a..",
-      "match": "\\b(read|write|writeln)\\b(?![?!])",
+      "match": "\\b(read|write)\\b(?![?!])",
       "name": "keyword.other.special-method.stk"
     },
     {

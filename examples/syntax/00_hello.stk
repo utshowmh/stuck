@@ -1,5 +1,5 @@
 # Comments starts with a '#' and ends with a 'newline'. There's no multiline comment (yet).
 
-read @name
-"hello, " write         # Writes operand to stdout (it's like print(name))
-name writeln            # Same as 'write' but appends a newline at the in.
+read @name 
+"hello, " write         # Writes operand to stdout (it's like print(name)).
+name write              # Same as 'write' but appends a newline at the in. 

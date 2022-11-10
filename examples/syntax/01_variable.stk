@@ -1,10 +1,10 @@
 # Working with Variables.
-
+ 
 400 @num                # Declares a variable called num, typeof number (it's like num = 400).
-num writeln             
+num write             
 num 20 + @num           # Mutates num (it's like num = num + 20).
-num writeln               
+num write
 "utsho" @author         # Declares a variable called author typeof string.
-author writeln
+author write
 true @author            # Variable types are dynamic. So, you can change their types.
-author writeln
+author write 

@@ -34,9 +34,9 @@ pub enum OperationType {
     Do,
     End,
 
+    Include,
     Read,
     Write,
-    Writeln,
 }
 
 #[derive(Debug, Clone)]

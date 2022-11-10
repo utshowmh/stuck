@@ -450,11 +450,11 @@ impl Tokenizer {
             .insert("false".to_string(), OperationType::False);
 
         self.keywords
+            .insert("include".to_string(), OperationType::Include);
+        self.keywords
             .insert("read".to_string(), OperationType::Read);
         self.keywords
             .insert("write".to_string(), OperationType::Write);
-        self.keywords
-            .insert("writeln".to_string(), OperationType::Writeln);
 
         self.keywords.insert("if".to_string(), OperationType::If);
         self.keywords

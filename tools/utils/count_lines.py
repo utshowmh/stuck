@@ -18,7 +18,7 @@ def count_lines(root_path: str = "."):
         with open(file, 'r') as f:
             lines = len(f.read().split('\n'))
             line_count += lines
-            print(f"found {lines} lines in {file}")
+            print(f"found {lines} lines in {file}.")
 
     print("-"*100)
     print(f"found {line_count} lines in {len(source_files)} files.")

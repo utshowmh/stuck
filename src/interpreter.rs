@@ -600,6 +600,30 @@ impl Interpreter {
                     }
                 }
 
+                OperationType::Include => {
+                    if self.stack.len() < 1 {
+                        self.stack_underflow(&format!(
+                            "'include' operation requires one operand in line {}",
+                            operation.line
+                        ));
+                    }
+
+                    let a = self.stack.pop().unwrap();
+                    match a {
+                        Object::String(_) => {
+                            todo!()
+                        }
+                        _ => {
+                            self.invalid_type(&format!(
+                                "'write' can use with only string in line {}",
+                                operation.line
+                            ));
+                        }
+                    }
+
+                    instruction_pointer += 1;
+                }
+
                 OperationType::Read => {
                     let mut object = String::new();
                     stdin().read_line(&mut object).unwrap_or_else(|err| {
@@ -634,34 +658,7 @@ impl Interpreter {
                         },
                         _ => {
                             self.invalid_type(&format!(
-                                "'write' can use with only number or string in line {}",
-                                operation.line
-                            ));
-                        }
-                    }
-
-                    instruction_pointer += 1;
-                }
-
-                OperationType::Writeln => {
-                    if self.stack.len() < 1 {
-                        self.stack_underflow(&format!(
-                            "'writeln' operation requires one operand in line {}",
-                            operation.line
-                        ));
-                    }
-
-                    let a = self.stack.pop().unwrap();
-                    match a {
-                        Object::String(string) => println!("{}", string),
-                        Object::Number(number) => println!("{}", number),
-                        Object::Boolean(boolean) => match boolean {
-                            Boolean::True => println!("true"),
-                            Boolean::False => println!("false"),
-                        },
-                        _ => {
-                            self.invalid_type(&format!(
-                                "'writeln' can use with only number or string in line {}",
+                                "'write' can use with only number, string and boolean in line {}",
                                 operation.line
                             ));
                         }

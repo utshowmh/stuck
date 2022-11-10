@@ -2,8 +2,7 @@
 
 0 @fib_0
 1 @fib_1
-0 @fib
-
+0 @fib 
 80 @n
 1 @i
 
@@ -14,4 +13,4 @@ while i n < do
     i 1 + @i
 end
 
-fib writeln
+fib write

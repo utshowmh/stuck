@@ -2,8 +2,8 @@
 
 0 @count                # Counter variable.
 100 @limit              # Limit 'till count to.
-    
+
 while count limit < do
     count 1 + @count
-    count writeln
+    count write
 end

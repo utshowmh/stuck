@@ -2,7 +2,7 @@
 
 true @x
 false @y
-
-x y & writeln       # Checks if x and y are truthy (it's like 'x and y').
-x y | writeln       # Checks if x or y is truthy (it's like 'x or y').
-x ! writeln         # Checks x's truthiness flips it's boolean value (it's like 'not x').
+ 
+x y & write       # Checks if x and y are truthy (it's like 'x and y').
+x y | write       # Checks if x or y is truthy (it's like 'x or y').
+x ! write         # Checks x's truthiness flips it's boolean value (it's like 'not x').

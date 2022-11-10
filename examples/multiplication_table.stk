@@ -12,4 +12,4 @@ while i 10 < do
         i j * writeln
     end
     0 @j
-end 
+end

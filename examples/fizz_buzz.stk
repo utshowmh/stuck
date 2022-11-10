@@ -4,11 +4,11 @@
 
 while i 100 < do
     i 1 + @i
-
     i write " -> " write
+
     i 3 % 0 = @fizz
     i 5 % 0 = @buzz
-    fizz buzz & @fizzbuzz
+    fizz buzz & @fizzbuzz 
 
     if fizzbuzz then
         "fizzbuzz" writeln

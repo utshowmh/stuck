@@ -1,10 +1,10 @@
 # A program that shows how to intaract with IO.
 
-"enter your name: " writeln
+"enter your name: " write
 read @name
-"enter your age: " writeln
+"enter your age: " write
 read @age
-"enter your gender: " writeln
+"enter your gender: " write
 read @gender
 
 "your are " write 
@@ -14,4 +14,4 @@ age write
 " years " write 
 " old " write
 gender write
-"." writeln
+"." write

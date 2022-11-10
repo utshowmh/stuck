@@ -27,4 +27,4 @@ if __name__ == "__main__":
     find_files()
     for example_path in example_paths:
         run_command(f"{STUCK_PATH} {example_path}")
-        input("[INFO] press [ENTER] to proceed")
+        input("[INFO] press [ENTER] to proceed...")
