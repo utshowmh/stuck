@@ -16,11 +16,13 @@ def find_and_replace(find: str, replace: str, root_path: str = ".",):
     for file in source_files:
         content = ""
         with open(file, 'r') as f:
-            for word in f.read().split():
-                if word == find:
-                    content += replace
-                else:
-                    content += word
+            for line in f.readlines():
+                for word in line.split(" "):
+                    if word == find:
+                        content += replace
+                    else:
+                        content += word
+                    content += " "
         with open(file, "w") as f:
             f.write(content)
         print(f"working on {file}.")
