@@ -2,7 +2,7 @@
 
 [
     "you are ... " write
-    name writeln
+    name write
 ] @say_my_name
 
 "utsho" @name

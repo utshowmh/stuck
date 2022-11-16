@@ -4,7 +4,7 @@
 1 @fatctorial                       # Calculated factorial.
 
 while limit 0 > do
-    fatctorial limit * @fatctorial  # Calculating factorial (using n * n - 1 * ... * 1).
+    fatctorial limit * @fatctorial  # Calculating factorial (using n * n - 1 * ... * n - n).
     limit 1 - @limit
 end
 

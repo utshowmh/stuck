@@ -3,14 +3,18 @@
 0 @fib_0
 1 @fib_1
 0 @fib 
-80 @n
+75 @n
 1 @i
+
+[
+    i 1 + @i
+] @dec_i
 
 while i n < do
     fib_0 fib_1 + @fib
     fib_1 @fib_0
     fib @fib_1
-    i 1 + @i
+    dec_i
 end
 
 fib write
